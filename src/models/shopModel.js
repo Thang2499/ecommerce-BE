@@ -1,50 +1,50 @@
 import mongoose from "mongoose";
 
 const shopSchema = new mongoose.Schema({
-    userId:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'users',
-        require:true
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users',
+        require: true
     },
-    orderIds:[
+    orderIds: [
         {   
-         type:mongoose.Schema.Types.ObjectId,
-         ref:'orders'
+         type: mongoose.Schema.Types.ObjectId,
+         ref: 'orders'
         }
     ],
-    name:{
-        type:String,
-        require:true
+    name: {
+        type: String,
+        require: true
     },
-    email:{
-        type:String,
-        require:true
+    email: {
+        type: String,
+        require: true
     },
-    phone:{
-        type:String,
-        require:true
+    phone: {
+        type: String,
+        require: true
     },
-    description:{
-        type:String
+    description: {
+        type: String
     },
-    role:{
-        type:String,
-        require:true,
-        default:'shop'
+    role: {
+        type: String,
+        require: true,
+        default: 'shop'
     },
-    address:{
-        type:String
+    address: {
+        type: String
     },
-    isActive:{
-        type:Boolean,
-        default:false
+    isActive: {
+        type: Boolean,
+        default: false
     },
-    createAt:{
-        Date:Date.now(),
-        type:String
+    createAt: {
+        Date: Date.now(),
+        type: String
     }
 })
 
-const shopModel = mongoose.model('shops',shopSchema);
+const shopModel = mongoose.model('shops', shopSchema);
 
 export default shopModel;
