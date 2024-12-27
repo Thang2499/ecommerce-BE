@@ -12,7 +12,7 @@ app.use(cors({
     // credentials: true,               
   }));
 
-await mongoose.connect(process.env.connect).then(()=>{
+await mongoose.connect(process.env.BASE_URI).then(()=>{
     console.log('connect mongoose success');
 });
 
