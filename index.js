@@ -4,10 +4,8 @@ import cors from 'cors';
 import indexRoute from './src/routes/indexRoute.js';
 import databaseService from './src/services/database.service.js';
 
-
 dotenv.config();
 const app = express();
-
 
 app.use(express.json());
 // app.use(cookieParser());
