@@ -1,37 +1,37 @@
 import mongoose from "mongoose";
 const roles = ["SUPER_ADMIN", "ADMIN", "MODERATOR"];
 const adminSchema = new mongoose.Schema({
-    name:{
-        type:String,
+    name: {
+        type: String,
         unique: true,
-        trim:true
+        trim: true
         // require:true
     },
-    email:{
-        type:String,
-        require:true
+    email: {
+        type: String,
+        require: true
     },
-    password:{
+    password: {
         type:String,
         require:true
     },
     role: {
         type: String,
         enum: roles,
-        default: "ADMIN",
+        default: "ADMIN"
       },
     phone:{
-        type:String,
+        type: String,
         // require:true
     },
-    address:{
-        type:String
+    address: {
+        type: String
     },
     gender:{
-        type:String
+        type: String
     },
 })
 
-const adminModel = mongoose.model('admins',adminSchema);
+const adminModel = mongoose.model('admins', adminSchema);
 
 export default adminModel;

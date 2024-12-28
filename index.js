@@ -1,10 +1,14 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import mongoose from 'mongoose';
-import indexRoute from './src/routes/indexRoute.js';
 import cors from 'cors';
+import indexRoute from './src/routes/indexRoute.js';
+import databaseService from './src/services/database.service.js';
+
+
 dotenv.config();
 const app = express();
+
+
 app.use(express.json());
 // app.use(cookieParser());
 app.use(cors({
@@ -12,12 +16,18 @@ app.use(cors({
     // credentials: true,               
   }));
 
-await mongoose.connect(process.env.BASE_URI).then(()=>{
-    console.log('connect mongoose success');
-});
-
 app.use('',indexRoute);
 
-app.listen(process.env.PORT || 8080,()=>{
-    console.log('server is running');
+// ON START
+app.listen(process.env.PORT || 8080, async (err) => {
+    // connect mongoDB via service
+    await databaseService.connect()
+    console.log(`Banh truong lanh dia\nhttp://localhost:${process.env.PORT}`)
+})
+
+
+// ON EXIT
+process.on('SIGINT', function () {
+    console.log("\nServer bị đóng bởi tổ hợp phím Ctrl + C");
+    process.exit(1);
 });
