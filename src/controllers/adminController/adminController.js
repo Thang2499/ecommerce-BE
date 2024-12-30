@@ -1,5 +1,5 @@
 const adminController = {
-    login: async (req, res) => {}
+    login: async (req, res) => { }
 }
 
 export default adminController;
