@@ -16,22 +16,22 @@ cloudinary.config(cloudinaryConfig);
 class imageHandler {
     // anh nghĩ tên folder trên cloudinary khai báo cứng luôn như: const folderCloudinary = "imageSource" rồi gán vào param của methods luôn, tránh trường hợp ghi lại nhiều lần sai tên folder
     async postSingleImage(filePath, folder) {
-        try{
-            const res = await cloudinary.uploader.upload(filePath, { 
+        try {
+            const res = await cloudinary.uploader.upload(filePath, {
                 public_id: `${Date.now()}_${Math.floor(Math.random() * 1000)}`,
-                folder 
+                folder
             });
             return res;
-        }catch(err){
+        } catch (err) {
             try {
                 // delete the file if it fails to upload
                 fs.unlinkSync(filePath);
             } catch (unlinkErr) {
                 console.error('Failed to delete local file:', unlinkErr);
             }
-            return err; 
+            return err;
         }
-        }
+    }
 
     // usage:
     // const imageData = await cloudinaryService.postSingleImage(`filePath, 'folder')
@@ -47,7 +47,7 @@ class imageHandler {
     async postMultipleImages(imagesPath, folder) {
         let result = [];
         //Nhận vào 1 mảng các url image và map ra từng url
-        const uploadMultipleImages = imagesPath.map(async (filePath)=>{
+        const uploadMultipleImages = imagesPath.map(async (filePath) => {
             try {
                 const response = await cloudinary.uploader.upload(filePath, {
                     public_id: `${Date.now()}_${Math.floor(Math.random() * 1000)}`,

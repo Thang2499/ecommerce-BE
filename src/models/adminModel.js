@@ -12,22 +12,22 @@ const adminSchema = new mongoose.Schema({
         require: true
     },
     password: {
-        type:String,
-        require:true
+        type: String,
+        require: true
     },
     role: {
         type: String,
         enum: roles,
         default: "ADMIN"
-      },
-    phone:{
+    },
+    phone: {
         type: String,
         // require:true
     },
     address: {
         type: String
     },
-    gender:{
+    gender: {
         type: String
     },
 })
