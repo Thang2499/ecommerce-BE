@@ -6,6 +6,8 @@ import tokenService from '../../services/jwt.service.js';
 const userRoute = express.Router();
 
 userRoute.get('/user', userMiddleware.checkLogin, userController.login);
+userRoute.post('/register', userController.register)
+userRoute.post('/login',userController.login)
 userRoute.post('/refresh-token', tokenService.refreshAccessToken);
 
 export default userRoute;
