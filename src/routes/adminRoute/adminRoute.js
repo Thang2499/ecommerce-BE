@@ -4,5 +4,6 @@ import adminController from '../../controllers/adminController/adminController.j
 
 const adminRoute = express.Router();
 adminRoute.post('/login', adminMiddleware.checkLogin, adminController.login);
+adminRoute.post('/signup', adminMiddleware.register, adminController.register);
 
 export default adminRoute;
