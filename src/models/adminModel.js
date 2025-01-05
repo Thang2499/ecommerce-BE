@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-const roles = ["SUPER_ADMIN", "ADMIN", "MODERATOR"];
+const roles = ["SUPER_ADMIN", "ADMIN", "READ_ONLY"];
 const adminSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -18,7 +18,8 @@ const adminSchema = new mongoose.Schema({
     role: {
         type: String,
         enum: roles,
-        default: "ADMIN"
+        default: "ADMIN",
+        require: true
     },
     phone: {
         type: String,

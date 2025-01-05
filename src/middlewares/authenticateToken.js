@@ -3,7 +3,7 @@ import userModel from '../models/userModel.js';
 import tokenService from '../services/jwt.service.js';
 dotenv.config();
 
-//Hàm lấy lại accessToken khi hết hạn
+
 const authenticateToken = async (req, res, next) => {
     try {
         const authorizationData = req.headers['authorization']

@@ -7,14 +7,18 @@ const adminController = {
         try {
             const { email } = req.body;
             const admin = await adminModel.findOne({ email });
-
             const accessToken = tokenService.signAccessToken({ admin });
             const refreshToken = tokenService.signRefreshToken({ admin });
-
+            res.cookie('refresh-Token',refreshToken, {
+                httpOnly: true,
+                secure: false,
+                sameSite: 'Lax',
+                maxAge: 24 * 60 * 60 * 1000
+            })
             return res.status(200).json({
                 message: 'Dang nhap thanh cong',
                 accessToken,
-                refreshToken,
+                admin
             });
         }
         catch (err) {
