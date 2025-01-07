@@ -32,7 +32,7 @@ class tokenHandler {
     // hàm lấy lại refreshToken khi accessToken hết hạn cho users
     refreshAccessToken = async (req, res) => {
         try {
-            const { refreshToken } = req.body;
+            const { refreshToken } = req.signedCookies;
             if (!refreshToken) {
                 return res.status(401).json({ message: 'Refresh token is required' });
             }
