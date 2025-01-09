@@ -5,7 +5,7 @@ import tokenService from "../../services/jwt.service.js";
 const manageUser = {
     approve: async (req, res) => {
         try {
-            const token = req.headers.authorization;
+            const token = req.headers.authorization.split(' ')[1];
             const { id } = req.params;
             const { name, email, phone, address } = req.body;
             

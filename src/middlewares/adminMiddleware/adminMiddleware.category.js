@@ -4,8 +4,7 @@ import tokenService from "../../services/jwt.service.js";
 const categoryMiddleware = {
     create: async (req, res, next) => {
         try {
-            const token = req.headers.authorization;
-            const { name } = req.body;
+            const token = req.headers.authorization.split(' ')[1];
 
             const admin = tokenService.verifyToken(token);
 
