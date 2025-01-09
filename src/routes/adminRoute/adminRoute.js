@@ -10,6 +10,6 @@ adminRoute.post('/login', adminMiddleware.checkLogin, adminController.login);
 adminRoute.post('/signup', adminMiddleware.register, adminController.register);
 
 // category
-adminRoute.post('/category/create', categoryMiddleware.create,categoryController.create);
+
 
 export default adminRoute;
