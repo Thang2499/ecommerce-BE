@@ -10,6 +10,7 @@ const userController = {
             const accessToken = tokenService.signAccessToken({ user });
             const refreshToken = tokenService.signRefreshToken({ user });
             res.cookie('refresh-Token',refreshToken, {
+                signed: true,
                 httpOnly: true,
                 secure: false,
                 sameSite: 'Lax',

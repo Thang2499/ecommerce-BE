@@ -31,6 +31,10 @@ const adminSchema = new mongoose.Schema({
     gender: {
         type: String
     },
+    isActived: {
+        type: Boolean,
+        default: true
+    },
 })
 
 const adminModel = mongoose.model('admins', adminSchema);

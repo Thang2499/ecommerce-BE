@@ -21,7 +21,7 @@ const categoryMiddleware = {
             if(admin.role !== 'SUPER_ADMIN' && admin.role !== 'ADMIN') {
                 throw Error('Ban khong co quyen');
             }
-
+            req.admin = admin;
             next();
         } catch (err) {
             res.status(400).json({ message: err.message });
