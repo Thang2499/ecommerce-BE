@@ -16,9 +16,9 @@ const categoryController = {
 
             await category.save();
 
-            res.status(200).json({ message: 'Tạo danh mục thành công' });
+            return res.status(200).json({ message: 'Tạo danh mục thành công' });
         } catch (err) {
-            res.status(400).json({ message: err.message });
+            return res.status(400).json({ message: err.message });
         }
     },
 }

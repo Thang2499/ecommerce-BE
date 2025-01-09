@@ -5,19 +5,24 @@ import tokenService from "../../services/jwt.service.js";
 const manageUser = {
     approve: async (req, res) => {
         try {
+            const token = req.headers.authorization;
             const { id } = req.params;
-            const { token } = req.body;
+            const { name, email, phone, address } = req.body;
+            
+            if(!name, !email, !phone, !description, !address) {
+                throw Error('Thieu thong tin');
+            }
 
             const admin = tokenService.verifyToken(token);
 
-            if (admin.role !== 'SUPER_ADMIN' && admin.role !== 'ADMIN') {
+            if (admin.role !== 'SUPER_ADMIN' && admin.role !== 'ADMIN' || !admin.isActived) {
                 throw Error('Ban khong co quyen');
             }
 
             
             const user = userModel.findOne({ _id: id });
             
-            if (!user) {
+            if (!user || !user.isActived) {
                 throw Error('Khong tim thay user');
             }
 
@@ -27,10 +32,11 @@ const manageUser = {
                 throw Error('User da la shop');
             }
 
+            req.user = user;
             next();
         }
         catch (err) {
-            res.status(400).json({ message: err.message });
+            return res.status(400).json({ message: err.message });
         }
     }
 };
