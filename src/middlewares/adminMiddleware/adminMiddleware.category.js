@@ -1,4 +1,3 @@
-import adminModel from "../../models/adminModel.js";
 import categoryModel from "../../models/categoryModel.js";
 import tokenService from "../../services/jwt.service.js";
 
