@@ -25,7 +25,7 @@ const adminMiddleware = {
             next();
 
         } catch (err) {
-            res.status(400).json({ message: err.message });
+            return res.status(400).json({ message: err.message });
         }
     },
     register: async (req, res, next) => {
@@ -45,7 +45,7 @@ const adminMiddleware = {
             next();
         }
         catch (err) {
-            res.status(400).json({ message: err.message });
+            return res.status(400).json({ message: err.message });
         }
     }
 }
