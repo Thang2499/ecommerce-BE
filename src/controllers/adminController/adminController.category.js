@@ -6,7 +6,7 @@ const categoryController = {
             const { name, description, image, parentId } = req.body;
             const admin = req.admin;
             const category = new categoryModel({
-                name,
+                name: name,
                 description: description || '',
                 image: image || '',
                 parentId: parentId || null,
