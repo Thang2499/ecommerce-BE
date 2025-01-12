@@ -9,6 +9,8 @@ import manageUserController from '../../controllers/adminController/adminControl
 const adminRoute = express.Router();
 adminRoute.post('/login', adminMiddleware.checkLogin, adminController.login);
 adminRoute.post('/signup', adminMiddleware.register, adminController.register);
+adminRoute.post('/approve/admin', adminMiddleware.request, adminController.approve_ADMIN);
+adminRoute.post('/approve/read-only', adminMiddleware.request, adminController.approve_READ_ONLY);
 
 // category
 adminRoute.post('/category/create', categoryMiddleware.create, categoryController.create);

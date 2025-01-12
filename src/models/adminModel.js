@@ -33,8 +33,12 @@ const adminSchema = new mongoose.Schema({
     },
     isActived: {
         type: Boolean,
-        default: true
+        default: false
     },
+    requesting: {
+        type: Boolean,
+        default: true
+    }
 })
 
 const adminModel = mongoose.model('admins', adminSchema);
