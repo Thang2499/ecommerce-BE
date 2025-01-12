@@ -7,11 +7,6 @@ const manageUser = {
         try {
             const token = req.headers.authorization.split(' ')[1];
             const { id } = req.params;
-            const { name, email, phone, address } = req.body;
-            
-            if(!name, !email, !phone, !description, !address) {
-                throw Error('Thieu thong tin');
-            }
 
             const admin = tokenService.verifyToken(token);
 
@@ -28,15 +23,26 @@ const manageUser = {
 
             const shop = shopModel.findOne({ userId: user });
 
-            if(shop) {
-                throw Error('User da la shop');
+            if(!shop) {
+                throw Error('User chua tao shop');
             }
 
-            req.user = user;
+            if(shop.isActive) {
+                throw Error('User da la shop');
+            }
+            req.params = user;
             next();
         }
         catch (err) {
             return res.status(400).json({ message: err.message });
+        }
+    },
+    reject: async(req, res) => {
+        try{
+            next();
+        }
+        catch(err) {
+
         }
     }
 };
