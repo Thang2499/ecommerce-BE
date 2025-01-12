@@ -16,7 +16,7 @@ const categorySchema = new mongoose.Schema({
     },
     parentId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "category",
+        ref: "categories",
         default: null
     },
     isActive: {
@@ -30,7 +30,7 @@ const categorySchema = new mongoose.Schema({
     },
     role: {
         type: String, 
-        enum: ["SUPER_ADMIN"], // chỉ có super admin mới có quyền tạo category
+        enum: ["SUPER_ADMIN","ADMIN"], // chỉ có super admin mới có quyền tạo category
         required: true
     },
     createdAt: {
@@ -41,7 +41,7 @@ const categorySchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     }
-})
+}  )
 
-const categoryModel = mongoose.model('category', categorySchema);
+const categoryModel = mongoose.model('categories', categorySchema);
 export default categoryModel;

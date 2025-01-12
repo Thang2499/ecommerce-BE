@@ -20,7 +20,7 @@ const adminController = {
                 message: 'Dang nhap thanh cong',
                 accessToken,
                 admin
-                // admin de lam gi vay?
+                // admin de lam gi vay? lấy thông tin admin để hiển thị thông tin admin đăng nhập,lên FE khỏi phải decode token
             });
         }
         catch (err) {
