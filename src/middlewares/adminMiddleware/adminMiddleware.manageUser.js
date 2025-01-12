@@ -3,7 +3,15 @@ import shopModel from "../../models/shopModel.js";
 import tokenService from "../../services/jwt.service.js";
 
 const manageUser = {
-    approve: async (req, res) => {
+    getList: async (req, res) => {
+        try {
+            next();
+        }
+        catch (err) {
+            return res.status(400).json({ message: err.message });
+        }
+    },
+    request: async (req, res) => {
         try {
             const token = req.headers.authorization.split(' ')[1];
             const { id } = req.params;
@@ -14,20 +22,24 @@ const manageUser = {
                 throw Error('Ban khong co quyen');
             }
 
-            
+
             const user = userModel.findOne({ _id: id });
-            
+
             if (!user || !user.isActived) {
                 throw Error('Khong tim thay user');
             }
 
             const shop = shopModel.findOne({ userId: user });
 
-            if(!shop) {
+            if (!shop) {
                 throw Error('User chua tao shop');
             }
 
-            if(shop.isActive) {
+            if(!shop.requesting) {
+                throw Error('Shop chua request');
+            }
+
+            if (shop.isActive) {
                 throw Error('User da la shop');
             }
             req.params = user;
@@ -35,14 +47,6 @@ const manageUser = {
         }
         catch (err) {
             return res.status(400).json({ message: err.message });
-        }
-    },
-    reject: async(req, res) => {
-        try{
-            next();
-        }
-        catch(err) {
-
         }
     }
 };
