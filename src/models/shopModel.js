@@ -39,6 +39,10 @@ const shopSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    requesting: {
+        type: Boolean,
+        default: true
+    },
     createAt: {
         Date: Date.now(),
         type: String

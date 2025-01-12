@@ -6,10 +6,10 @@ const adminController = {
     login: async (req, res) => {
         try {
             const { email } = req.body;
-            const admin = await adminModel.findOne({ email });
+            const admin = await adminModel.findOne({ email, isActived: true, requesting: false });
             const accessToken = tokenService.signAccessToken({ admin });
             const refreshToken = tokenService.signRefreshToken({ admin });
-            res.cookie('refresh-Token',refreshToken, {
+            res.cookie('refresh-Token', refreshToken, {
                 signed: true,
                 httpOnly: true,
                 secure: false,
@@ -20,6 +20,7 @@ const adminController = {
                 message: 'Dang nhap thanh cong',
                 accessToken,
                 admin
+                // admin de lam gi vay?
             });
         }
         catch (err) {
@@ -38,26 +39,49 @@ const adminController = {
                 name,
                 email,
                 password: hashPassword,
-                phone,
-                address: address || "",
-                gender: gender || ""
+                phone: phone || '',
+                address: address || '',
+                gender: gender || ''
             });
 
             await newAdmin.save();
 
-            const accessToken = tokenService.signAccessToken({ user: newAdmin });
-            const refreshToken = tokenService.signRefreshToken({ user: newAdmin });
-
-            return res.status(201).json({
-                message: 'Dang ky thanh cong',
-                accessToken,
-                refreshToken
-            });
+            return res.status(201).json({ message: 'Request dang ky thanh cong' });
         }
         catch (err) {
             return res.status(400).json({ message: `Unknown bug, ${err.message}` });
         }
-    }
+    },
+    approve_ADMIN: async (req, res) => {
+        try {
+            const { id } = req.params;
+            /* const approveAdmin = */await adminModel.findByIdAndUpdate({ _id: id }, { requesting: false, isActived: true, role: 'ADMIN' }, { new: true });
+            return res.status(200).json({ message: 'Approve thanh cong' });
+        }
+        catch (err) {
+            return res.status(400).json({ message: err.message });
+        }
+    },
+    approve_READ_ONLY: async (req, res) => {
+        try {
+            const { id } = req.params;
+            /* const approveAdmin = */await adminModel.findByIdAndUpdate({ _id: id }, { requesting: false, isActived: true, role: 'READ_ONLY' }, { new: true });
+            return res.status(200).json({ message: 'Approve thanh cong' });
+        }
+        catch (err) {
+            return res.status(400).json({ message: err.message });
+        }
+    },
+    reject: async (req, res) => {
+        try {
+            const { id } = req.params;
+            /* const rejectAdmin = */await adminModel.findByIdAndUpdate({ _id: id }, { requesting: false, isActived: false }, { new: true });
+            return res.status(200).json({ message: 'Reject thanh cong' });
+        }
+        catch (err) {
+            return res.status(400).json({ message: err.message });
+        }
+    },
 }
 
 export default adminController;
