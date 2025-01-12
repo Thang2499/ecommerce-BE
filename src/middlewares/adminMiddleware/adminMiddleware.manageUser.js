@@ -3,14 +3,6 @@ import shopModel from "../../models/shopModel.js";
 import tokenService from "../../services/jwt.service.js";
 
 const manageUser = {
-    getList: async (req, res) => {
-        try {
-            next();
-        }
-        catch (err) {
-            return res.status(400).json({ message: err.message });
-        }
-    },
     request: async (req, res) => {
         try {
             const token = req.headers.authorization.split(' ')[1];

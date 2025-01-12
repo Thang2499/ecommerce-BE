@@ -14,7 +14,7 @@ adminRoute.post('/signup', adminMiddleware.register, adminController.register);
 adminRoute.post('/category/create', categoryMiddleware.create, categoryController.create);
 
 // manage user
-adminRoute.get('/user/list', manageUserMiddleware.getList, manageUserController.getList);
+adminRoute.get('/user/list', manageUserController.getList);
 adminRoute.post('/user/approve', manageUserMiddleware.request, manageUserController.approve);
 adminRoute.post('/user/reject', manageUserMiddleware.request, manageUserController.reject);
 
