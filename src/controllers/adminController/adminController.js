@@ -1,6 +1,9 @@
+import fs from 'fs';
 import adminModel from "../../models/adminModel.js";
 import tokenService from "../../services/jwt.service.js";
 import kryptoService from "../../utils/hashing.js";
+
+const filePath = fs.realpathSync('./');
 
 const adminController = {
     login: async (req, res) => {
@@ -31,8 +34,6 @@ const adminController = {
         try {
             const { name, email, password, phone, address, gender } = req.body;
 
-            console.log(name, email, password)
-
             const hashPassword = await kryptoService.encrypt(password);
 
             const newAdmin = new adminModel({
@@ -49,6 +50,9 @@ const adminController = {
             return res.status(201).json({ message: 'Request dang ky thanh cong' });
         }
         catch (err) {
+            if (req.file) {
+                fs.unlinkSync(`${filePath}\\images\\avatar\\${req.file.filename}`)
+            }
             return res.status(400).json({ message: `Unknown bug, ${err.message}` });
         }
     },
