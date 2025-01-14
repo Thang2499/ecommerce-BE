@@ -6,10 +6,8 @@ const categoryMiddleware = {
         try {
             const { name } = req.body;
             const token = req.headers.authorization.split(' ')[1];
-
             const admin = tokenService.verifyToken(token);
-
-            if (admin.role !== 'SUPER_ADMIN' || !admin.isActived) {
+            if (admin.admin.isActived === false || admin.admin.role !== 'ADMIN') {
                 throw Error('Ban khong co quyen');
             }
 

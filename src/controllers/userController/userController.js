@@ -1,3 +1,4 @@
+import shopModel from "../../models/shopModel.js";
 import userModel from "../../models/userModel.js";
 import tokenService from "../../services/jwt.service.js";
 import kryptoService from "../../utils/hashing.js";
@@ -52,23 +53,36 @@ const userController = {
             }
         },
         requestSeller: async (req, res) => {
+            const { name, email, phone, description, address } = req.body
+
             try {
-                const { userId } = req.params;
+                const userId = req.user.id;
                 const user = await userModel.findById(userId);
                 if (!user) {
-                    return res.status(404).json({ message: "Nguoi dung khong ton tai"});
-                }
-                if (user.sellerRequest) {
-                    return res.status(400).json({message: "Yeu cau cua nguoi dung da duoc gui"})
+                    return res.status(404).json({message:"Nguoi dung khong ton tai"});
                 }
 
-                user.sellerRequest = true;
-                user.isActived = false;
-                await user.save();
+                const existingShop = await shopModel.findOne({userId});
+                if (existingShop) {
+                    return res.status(400).json({message:"Da gui yeu cau tro thanh nguoi ban"});
+                }
+                const newShop = new shopModel({
+                    userId,
+                    name,
+                    email,
+                    phone,
+                    description,
+                    address,
+                });
+                await newShop.save();
+                res.status(201).json({
+                    message:"Yeu cau tro thanh nguoi ban da gui, vui long doi phe duyet",
+                    shop: newShop,
 
-                res.status(200).json({ message: "Yeu cau duoc gui thanh cong",user});
-            } catch (error) {
-                res.status(500).json({ message: "Loi sever", error});
+                });
+            } catch (err) {
+                console.error(err);
+                res.status(500).json({message:"Loi khi gui yeu cau", error: err.message})
             }
         },
     }
