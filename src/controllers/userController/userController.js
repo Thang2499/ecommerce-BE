@@ -20,7 +20,7 @@ const userController = {
                     message: 'Dang nhap thanh cong',
                     accessToken,
                     refreshToken,
-                    user: {name: user.name, email: user.email}
+                    user:user
                 });
             } catch (err) {
                 return res.status(400).json({ message: `Unknown bug, ${err.message}` });

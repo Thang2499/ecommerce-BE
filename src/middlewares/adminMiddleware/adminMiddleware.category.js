@@ -8,17 +8,17 @@ const categoryMiddleware = {
             const token = req.headers.authorization.split(' ')[1];
             const admin = tokenService.verifyToken(token);
             if (admin.admin.isActived === false || admin.admin.role !== 'ADMIN') {
-                throw Error('Ban khong co quyen');
+                return res.send('Ban khong co quyen');
             }
 
             if (!name) {
-                throw Error('Vui long dien day du thong tin');
+                return res.send('Vui long dien day du thong tin');
             }
 
             const category = await categoryModel.findOne({ name });
 
             if (category) {
-                throw Error('Danh muc da ton tai');
+                return res.send('Danh muc da ton tai');
             }
 
             req.admin = admin;

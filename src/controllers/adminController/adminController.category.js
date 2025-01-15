@@ -4,7 +4,6 @@ const categoryController = {
     create: async (req, res) => {
         try {
             const { name, description, image, parentId } = req.body;
-            console.log(parentId);
             const admin = req.admin;
             const category = new categoryModel({
                 name: name,

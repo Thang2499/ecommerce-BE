@@ -6,9 +6,9 @@ import { authenticateUser } from '../../middlewares/userMiddleware/jwtMiddleware
 
 const userRoute = express.Router();
 
-userRoute.get('/user', userMiddleware.checkLogin, userController.login);
-userRoute.post('/register', userController.register)
-userRoute.post('/login',userController.login)
+// userRoute.get('/user', userMiddleware.checkLogin, userController.login);
+userRoute.post('/register',userMiddleware.checkResgister, userController.register)
+userRoute.post('/login', userMiddleware.checkLogin, userController.login)
 userRoute.post('/refresh-token', tokenService.refreshAccessToken);
 userRoute.post('/request-seller/:userId', authenticateUser, userController.requestSeller)
 export default userRoute;

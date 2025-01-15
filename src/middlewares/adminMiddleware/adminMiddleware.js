@@ -7,23 +7,23 @@ const adminMiddleware = {
             const { email, password } = req.body;
 
             if (!email || !password) {
-                throw Error('Vui long dien day du thong tin dang nhap');
+                return res.send('Vui long dien day du thong tin dang nhap');
             }
 
             const admin = await adminModel.findOne({ email });
 
             if (!admin || !admin.isActived) {
-                throw Error('Tai khoan khong ton tai');
+                return res.send('Tai khoan khong ton tai');
             }
 
             if (admin.requesting) {
-                throw Error('Tai khoan chua duoc kich hoat');
+                return res.send('Tai khoan chua duoc kich hoat');
             }
 
             const comparePassword = kryptoService.decrypt(password, admin.password);
 
             if (!comparePassword) {
-                throw Error('Sai mat khau');
+                return res.send('Sai mat khau');
             };
 
             next();
