@@ -1,4 +1,5 @@
 import express from 'express';
+import { imageService } from '../../services/multer.service.js';
 import adminMiddleware from '../../middlewares/adminMiddleware/adminMiddleware.js';
 import adminController from '../../controllers/adminController/adminController.js';
 import categoryMiddleware from '../../middlewares/adminMiddleware/adminMiddleware.category.js';
@@ -8,12 +9,13 @@ import manageUserController from '../../controllers/adminController/adminControl
 
 const adminRoute = express.Router();
 adminRoute.post('/login', adminMiddleware.checkLogin, adminController.login);
-adminRoute.post('/signup', adminMiddleware.register, adminController.register);
+adminRoute.post('/signup', imageService.saveSingleImg('avatar'), adminMiddleware.register, adminController.register);
 adminRoute.post('/approve/admin', adminMiddleware.request, adminController.approve_ADMIN);
 adminRoute.post('/approve/read-only', adminMiddleware.request, adminController.approve_READ_ONLY);
 
 // category
-adminRoute.post('/category/create', categoryMiddleware.create, categoryController.create);
+adminRoute.post('/category/create', imageService.saveSingleImg('category'), categoryMiddleware.create, categoryController.create);
+adminRoute.put('/category/update', imageService.saveSingleImg('category'), categoryMiddleware.update, categoryController.update);
 
 // manage user
 adminRoute.get('/user/list', manageUserController.getList);

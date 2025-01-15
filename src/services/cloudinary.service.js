@@ -19,7 +19,7 @@ class imageHandler {
         try {
             const res = await cloudinary.uploader.upload(filePath, {
                 public_id: `${Date.now()}_${Math.floor(Math.random() * 1000)}`,
-                folder
+                folder: '/e_commerce/' + folder
             });
             return res;
         } catch (err) {
@@ -51,7 +51,7 @@ class imageHandler {
             try {
                 const response = await cloudinary.uploader.upload(filePath, {
                     public_id: `${Date.now()}_${Math.floor(Math.random() * 1000)}`,
-                    folder,
+                    folder: '/e_commerce/' + folder
                 })
                 result.push(response);  // thêm vào result từng url image được cloudinary trả về
                 return response; // trả về từng url image từ cloudinary
