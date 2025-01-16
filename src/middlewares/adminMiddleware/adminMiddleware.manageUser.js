@@ -2,7 +2,7 @@ import userModel from "../../models/userModel.js";
 import shopModel from "../../models/shopModel.js";
 import tokenService from "../../services/jwt.service.js";
 
-const manageUser = {
+const manageShopMiddleware = {
     request: async (req, res, next) => {
         try {
             const token = req.headers.authorization.split(' ')[1];
@@ -40,4 +40,4 @@ const manageUser = {
     }
 };
 
-export default manageUser;
+export default manageShopMiddleware;

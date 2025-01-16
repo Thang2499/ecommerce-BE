@@ -1,7 +1,7 @@
 import shopModel from "../../models/shopModel.js";
 import userModel from "../../models/userModel.js";
 
-const manageUserController = {
+const manageShopController = {
     getListReqShop: async (req, res) => {
         try {
             const listShop = await shopModel.find({ requesting: true });
@@ -64,4 +64,4 @@ const manageUserController = {
     },
 };
 
-export default manageUserController;
+export default manageShopController;

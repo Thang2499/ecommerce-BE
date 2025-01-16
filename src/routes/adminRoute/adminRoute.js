@@ -4,8 +4,8 @@ import adminMiddleware from '../../middlewares/adminMiddleware/adminMiddleware.j
 import adminController from '../../controllers/adminController/adminController.js';
 import categoryMiddleware from '../../middlewares/adminMiddleware/adminMiddleware.category.js';
 import categoryController from '../../controllers/adminController/adminController.category.js';
-import manageUserMiddleware from '../../middlewares/adminMiddleware/adminMiddleware.manageUser.js';
-import manageUserController from '../../controllers/adminController/adminController.manageUser.js';
+import manageShopController from '../../controllers/adminController/adminController.manageUser.js';
+import manageShopMiddleware from '../../middlewares/adminMiddleware/adminMiddleware.manageUser.js';
 
 const adminRoute = express.Router();
 adminRoute.post('/login', adminMiddleware.checkLogin, adminController.login);
@@ -19,11 +19,11 @@ adminRoute.put('/category/update', imageService.saveSingleImg('category'), categ
 adminRoute.delete('/category/delete', categoryMiddleware.delete, categoryController.delete);
 
 // manage shop
-adminRoute.get('/shop/listReq', manageUserController.getListReqShop);
-adminRoute.get('/shop/listActive', manageUserController.getListActiveShop);
-adminRoute.post('/shop/approve/:id', manageUserMiddleware.request, manageUserController.approve);
-adminRoute.post('/shop/reject/:id', manageUserMiddleware.request, manageUserController.reject);
-adminRoute.get('/user/list', manageUserController.getListUser);
+adminRoute.get('/shop/listReq', manageShopController.getListReqShop);
+adminRoute.get('/shop/listActive', manageShopController.getListActiveShop);
+adminRoute.post('/shop/approve/:id', manageShopMiddleware.request, manageShopController.approve);
+adminRoute.post('/shop/reject/:id', manageShopMiddleware.request, manageShopController.reject);
+adminRoute.get('/user/list', manageShopController.getListUser);
 
 //manage admin
 
