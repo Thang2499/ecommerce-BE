@@ -7,19 +7,19 @@ const userMiddleware = {
             const { email, password } = req.body;
 
             if (!email || !password) {
-                throw Error('Vui long dien day du thong tin dang nhap');
+                return res.send('Vui long dien day du thong tin dang nhap');
             }
 
             const user = await userModel.findOne({ email });
 
             if (!user) {
-                throw Error('Email khong ton tai');
+                return res.send('Email khong ton tai');
             }
 
             const comparepassword = kryptoService.decrypt(password, user.password);
 
             if (!comparepassword) {
-                throw Error('Sai mat khau');
+                return res.send('Sai mat khau');
             };
 
             next();

@@ -1,8 +1,5 @@
-import fs from 'fs';
 import categoryModel from "../../models/categoryModel.js";
 import tokenService from "../../services/jwt.service.js";
-
-const filePath = fs.realpathSync('./');
 
 const categoryMiddleware = {
     create: async (req, res, next) => {
@@ -11,28 +8,24 @@ const categoryMiddleware = {
             const token = req.headers.authorization.split(' ')[1];
 
             const admin = tokenService.verifyToken(token);
-
-            if (admin.admin.role !== 'SUPER_ADMIN' || !admin.admin.isActived) {
+            if (admin.admin.isActived === false || admin.admin.role !== 'ADMIN') {
                 throw Error('Ban khong co quyen');
             }
 
             if (!name) {
-                throw Error('Vui long dien day du thong tin');
+                return res.send('Vui long dien day du thong tin');
             }
 
             const category = await categoryModel.findOne({ name });
 
             if (category) {
-                throw Error('Danh muc da ton tai');
+                return res.send('Danh muc da ton tai');
             }
 
             req.admin = admin;
 
             next();
         } catch (err) {
-            if (req.file) {
-                fs.unlinkSync(`${filePath}\\images\\category\\${req.file.filename}`)
-            }
             return res.status(400).json({ message: err.message });
         }
     },
@@ -56,9 +49,6 @@ const categoryMiddleware = {
             next();
         }
         catch (err) {
-            if (req.file) {
-                fs.unlinkSync(`${filePath}\\images\\category\\${req.file.filename}`)
-            }
             return res.status(400).json({ message: err.message });
         }
     },

@@ -7,7 +7,10 @@ const userController = {
         login: async (req, res) => {
             try {
                 const { email } = req.body;
-                const user = await userModel.findOne({ email });
+                const user = await userModel.findOne({ email }).populate({
+                    path: 'shopId',
+                    model: 'shops'
+                });;
                 const accessToken = tokenService.signAccessToken({ user });
                 const refreshToken = tokenService.signRefreshToken({ user });
                 res.cookie('refresh-Token',refreshToken, {
@@ -21,7 +24,7 @@ const userController = {
                     message: 'Dang nhap thanh cong',
                     accessToken,
                     refreshToken,
-                    user: {name: user.name, email: user.email}
+                    user:user
                 });
             } catch (err) {
                 return res.status(400).json({ message: `Unknown bug, ${err.message}` });
@@ -53,10 +56,10 @@ const userController = {
             }
         },
         requestSeller: async (req, res) => {
-            const { name, email, phone, description, address } = req.body
+            const { shopName, phoneNumber, description, address } = req.body
 
             try {
-                const userId = req.user.id;
+                const userId = req.user.user._id;
                 const user = await userModel.findById(userId);
                 if (!user) {
                     return res.status(404).json({message:"Nguoi dung khong ton tai"});
@@ -64,17 +67,18 @@ const userController = {
 
                 const existingShop = await shopModel.findOne({userId});
                 if (existingShop) {
-                    return res.status(400).json({message:"Da gui yeu cau tro thanh nguoi ban"});
+                    return res.status(400).json({message:"Chi duoc phep tao 1 cua hang"});
                 }
                 const newShop = new shopModel({
-                    userId,
-                    name,
-                    email,
-                    phone,
+                    userId: userId,
+                    name: shopName,
+                    email: user.email,
+                    phone: phoneNumber,
                     description,
                     address,
                 });
                 await newShop.save();
+                await userModel.findByIdAndUpdate(userId, {shopId: newShop._id});
                 res.status(201).json({
                     message:"Yeu cau tro thanh nguoi ban da gui, vui long doi phe duyet",
                     shop: newShop,

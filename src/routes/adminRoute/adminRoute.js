@@ -20,8 +20,14 @@ adminRoute.delete('/category/delete', categoryMiddleware.delete, categoryControl
 
 // manage shop
 adminRoute.get('/shop/list', manageShopController.getList);
-adminRoute.post('/shop/approve', manageShopMiddleware.request, manageShopController.approve);
-adminRoute.post('/shop/reject', manageShopMiddleware.request, manageShopController.reject);
-adminRoute.post('/shop/disable', manageShopMiddleware.disable, manageShopController.disable);
+adminRoute.post('/shop/approve/:id', manageShopMiddleware.request, manageShopController.approve);
+adminRoute.post('/shop/reject/:id', manageShopMiddleware.request, manageShopController.reject);
+adminRoute.post('/shop/disable/:id', manageShopMiddleware.disable, manageShopController.disable);
+adminRoute.get('/shop/listActive', manageShopController.getListActiveShop);
+
+// manage user
+adminRoute.get('/user/list', manageShopController.getListUser);
+
+//manage admin
 
 export default adminRoute;
