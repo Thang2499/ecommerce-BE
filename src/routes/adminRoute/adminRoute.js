@@ -16,6 +16,7 @@ adminRoute.post('/approve/read-only', adminMiddleware.request, adminController.a
 // category
 adminRoute.post('/category/create', imageService.saveSingleImg('category'), categoryMiddleware.create, categoryController.create);
 adminRoute.put('/category/update', imageService.saveSingleImg('category'), categoryMiddleware.update, categoryController.update);
+adminRoute.delete('/category/delete', categoryMiddleware.delete, categoryController.delete);
 
 // manage shop
 adminRoute.get('/shop/listReq', manageUserController.getListReqShop);

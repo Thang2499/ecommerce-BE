@@ -34,6 +34,14 @@ const adminController = {
         try {
             const { name, email, password, phone, address, gender } = req.body;
 
+            let categoryImg = 'https://freesvg.org/img/abstract-user-flat-4.png';
+            // anh có thể đặt link default img là link khác cho category, đây là link tạm thời em để
+            if (req.file) {
+                const categoryData = await cloudinaryService.postSingleImage(`${filePath}\\${req.file.path}`, 'category');
+                categoryImg = categoryData.url;
+                fs.unlinkSync(`${filePath}\\${req.file.path}`)
+            }
+
             const hashPassword = await kryptoService.encrypt(password);
 
             const newAdmin = new adminModel({
@@ -50,9 +58,6 @@ const adminController = {
             return res.status(201).json({ message: 'Request dang ky thanh cong' });
         }
         catch (err) {
-            if (req.file) {
-                fs.unlinkSync(`${filePath}\\images\\avatar\\${req.file.filename}`)
-            }
             return res.status(400).json({ message: `Unknown bug, ${err.message}` });
         }
     },
