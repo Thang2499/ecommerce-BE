@@ -61,6 +61,29 @@ const categoryMiddleware = {
             }
             return res.status(400).json({ message: err.message });
         }
+    },
+    delete: async (req, res, next) => {
+        try {
+            const { id } = req.params;
+            const token = req.headers.authorization.split(' ')[1];
+
+            const admin = tokenService.verifyToken(token);
+
+            if (admin.admin.role !== 'SUPER_ADMIN' || !admin.admin.isActived) {
+                throw Error('Ban khong co quyen');
+            }
+
+            const category = await categoryModel.findOne({ _id: id });
+
+            if (!category) {
+                throw Error('Danh muc khong ton tai');
+            }
+
+            next();
+        }
+        catch (err) {
+            return res.status(400).json({ message: err.message });
+        }
     }
 }
 

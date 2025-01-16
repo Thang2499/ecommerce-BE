@@ -1,5 +1,8 @@
+import fs from "fs";
 import adminModel from "../../models/adminModel.js";
 import kryptoService from "../../utils/hashing.js";
+
+const filePath = fs.realpathSync('./');
 
 const adminMiddleware = {
     checkLogin: async (req, res, next) => {
@@ -49,6 +52,9 @@ const adminMiddleware = {
             next();
         }
         catch (err) {
+            if(req.file) {
+                fs.unlinkSync(`${filePath}\\images\\avatar\\${req.file.filename}`)
+            }
             return res.status(400).json({ message: err.message });
         }
     },

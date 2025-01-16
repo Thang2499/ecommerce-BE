@@ -10,14 +10,15 @@ const categoryController = {
             const { name, description, parentId } = req.body;
 
             let categoryImg = 'https://freesvg.org/img/abstract-user-flat-4.png';
+            // anh có thể đặt link default img là link khác cho category, đây là link tạm thời em để
             if (req.file) {
                 const categoryData = await cloudinaryService.postSingleImage(`${filePath}\\${req.file.path}`, 'category');
                 categoryImg = categoryData.url;
                 fs.unlinkSync(`${filePath}\\${req.file.path}`)
             }
-            
+
             const admin = req.admin;
-            
+
             const category = new categoryModel({
                 name: name,
                 description: description || '',
@@ -35,7 +36,7 @@ const categoryController = {
         }
     },
     update: async (req, res) => {
-        try{
+        try {
             const { id } = req.params;
             const { name, description } = req.body;
 
@@ -56,10 +57,19 @@ const categoryController = {
 
             return res.status(200).json({ message: 'Sửa danh mục thành công', category: updatedCatefory });
         }
-        catch(err){
+        catch (err) {
+            return res.status(400).json({ message: err.message });
+        }
+    },
+    delete: async (req, res) => {
+        try {
+            const { id } = req.params;
+
+            await categoryModel.findOneAndDelete({ _id: id });
+        }
+        catch (err) {
             return res.status(400).json({ message: err.message });
         }
     }
 }
-
 export default categoryController
