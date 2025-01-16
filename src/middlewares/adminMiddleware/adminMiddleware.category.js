@@ -1,8 +1,5 @@
-import fs from 'fs';
 import categoryModel from "../../models/categoryModel.js";
 import tokenService from "../../services/jwt.service.js";
-
-const filePath = fs.realpathSync('./');
 
 const categoryMiddleware = {
     create: async (req, res, next) => {
@@ -29,9 +26,6 @@ const categoryMiddleware = {
 
             next();
         } catch (err) {
-            if (req.file) {
-                fs.unlinkSync(`${filePath}\\images\\category\\${req.file.filename}`)
-            }
             return res.status(400).json({ message: err.message });
         }
     },
@@ -55,9 +49,6 @@ const categoryMiddleware = {
             next();
         }
         catch (err) {
-            if (req.file) {
-                fs.unlinkSync(`${filePath}\\images\\category\\${req.file.filename}`)
-            }
             return res.status(400).json({ message: err.message });
         }
     }

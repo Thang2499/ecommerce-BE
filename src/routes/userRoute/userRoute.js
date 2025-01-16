@@ -10,5 +10,5 @@ const userRoute = express.Router();
 userRoute.post('/register',userMiddleware.checkResgister, userController.register)
 userRoute.post('/login', userMiddleware.checkLogin, userController.login)
 userRoute.post('/refresh-token', tokenService.refreshAccessToken);
-userRoute.post('/request-seller/:userId', authenticateUser, userController.requestSeller)
+userRoute.post('/request-seller', authenticateUser, userController.requestSeller)
 export default userRoute;

@@ -17,9 +17,14 @@ adminRoute.post('/approve/read-only', adminMiddleware.request, adminController.a
 adminRoute.post('/category/create', imageService.saveSingleImg('category'), categoryMiddleware.create, categoryController.create);
 adminRoute.put('/category/update', imageService.saveSingleImg('category'), categoryMiddleware.update, categoryController.update);
 
-// manage user
-adminRoute.get('/user/list', manageUserController.getList);
-adminRoute.post('/user/approve', manageUserMiddleware.request, manageUserController.approve);
-adminRoute.post('/user/reject', manageUserMiddleware.request, manageUserController.reject);
+// manage shop
+adminRoute.get('/shop/listReq', manageUserController.getListReqShop);
+adminRoute.get('/shop/listActive', manageUserController.getListActiveShop);
+adminRoute.post('/shop/approve/:id', manageUserMiddleware.request, manageUserController.approve);
+adminRoute.post('/shop/reject/:id', manageUserMiddleware.request, manageUserController.reject);
+adminRoute.get('/user/list', manageUserController.getListUser);
+
+//manage admin
+
 
 export default adminRoute;
