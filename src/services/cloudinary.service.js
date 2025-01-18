@@ -45,40 +45,31 @@ class imageHandler {
 
     // multiple images at a time
     async postMultipleImages(imagesPath, folder) {
-        let result = [];
-        //Nhận vào 1 mảng các url image và map ra từng url
-        const uploadMultipleImages = imagesPath.map(async (filePath) => {
+        let result = []; // Mảng kết quả sẽ chứa tất cả thông tin của các ảnh đã upload
+        // Dùng map để xử lý từng ảnh
+        const uploadMultipleImages = imagesPath.map(async (file) => {  // 'file' là từng file ảnh trong mảng
+            const filePath = file.path;  // Lấy đường dẫn của từng file
             try {
                 const response = await cloudinary.uploader.upload(filePath, {
                     public_id: `${Date.now()}_${Math.floor(Math.random() * 1000)}`,
                     folder: '/e_commerce/' + folder
-                })
-                result.push(response);  // thêm vào result từng url image được cloudinary trả về
-                return response; // trả về từng url image từ cloudinary
+                });
+                result.push(response);  // Thêm kết quả của từng ảnh vào mảng result
+                return response;  // Trả về thông tin của từng ảnh
             } catch (error) {
                 try {
-                    fs.unlinkSync(filePath);
+                    fs.unlinkSync(filePath);  // Xóa file nếu có lỗi
                 } catch (unlinkErr) {
                     console.error(`Failed to delete local file: ${filePath}`, unlinkErr);
                 }
-                return { error: err };
+                return { error: error.message };  // Trả về lỗi nếu có lỗi
             }
-        })
-        await Promise.all(uploadMultipleImages); // đợi khi tất cả url image tải lên được cloudinary trả về mới trả ra result
-        return result;
-
-        // for (const image in imagesPath) {
-        //     const response = await cloudinary.uploader.upload(imagesPath[image], { public_id: Math.ceil(Math.random() * Date.now() + Math.random() * Date.now()), folder }, ((err, res) => {
-        //         if (err) {
-        //             // delete the file if it fails to upload
-        //             result.map(e => fs.unlinkSync(e))
-        //             return err.error;
-        //         }
-        //     }));
-        //     result.push(response)
-        // }
-        // return result;
-
+        });
+        
+        // Đợi tất cả các ảnh hoàn thành upload
+        await Promise.all(uploadMultipleImages);  // Đảm bảo tất cả các ảnh đã được upload xong
+        
+        return result;  // Trả về mảng chứa thông tin tất cả các ảnh đã upload
     }
 }
 const cloudinaryService = new imageHandler();

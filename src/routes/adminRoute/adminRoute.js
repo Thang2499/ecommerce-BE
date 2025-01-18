@@ -22,7 +22,7 @@ adminRoute.delete('/category/delete', categoryMiddleware.delete, categoryControl
 adminRoute.get('/shop/list', manageShopController.getList);
 adminRoute.post('/shop/approve/:id', manageShopMiddleware.request, manageShopController.approve);
 adminRoute.post('/shop/reject/:id', manageShopMiddleware.request, manageShopController.reject);
-adminRoute.post('/shop/disable/:id', manageShopMiddleware.disable, manageShopController.disable);
+// adminRoute.post('/shop/disable/:id', manageShopMiddleware.disable, manageShopController.disable);
 adminRoute.get('/shop/listActive', manageShopController.getListActiveShop);
 
 // manage user

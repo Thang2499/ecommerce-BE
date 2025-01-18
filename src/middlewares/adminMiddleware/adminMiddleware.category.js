@@ -37,13 +37,13 @@ const categoryMiddleware = {
             const admin = tokenService.verifyToken(token);
 
             if (admin.admin.role !== 'SUPER_ADMIN' || !admin.admin.isActived) {
-                throw Error('Ban khong co quyen');
+                return res.send('Ban khong co quyen');
             }
 
             const category = await categoryModel.findOne({ _id: id });
 
             if (!category) {
-                throw Error('Danh muc khong ton tai');
+                return res.send('Danh muc khong ton tai');
             }
 
             next();

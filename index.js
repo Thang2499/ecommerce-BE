@@ -4,6 +4,7 @@ import cors from 'cors';
 import indexRoute from './src/routes/indexRoute.js';
 import databaseService from './src/services/database.service.js';
 import cookieParser from 'cookie-parser';
+import bodyParser from 'body-parser';
 
 const app = express();
 
@@ -14,7 +15,7 @@ app.use(cors({
     origin: 'http://localhost:5173', 
     credentials: true,               
 }));
-
+app.use(bodyParser.json());
 app.use('',indexRoute);
 
 // ON START
