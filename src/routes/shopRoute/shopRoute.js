@@ -5,5 +5,5 @@ import {imageService}   from '../../services/multer.service.js';
 const shopRoute = express.Router();
 shopRoute.post('/shopProfile', shopController.getShopProfile);
 shopRoute.get('/productList', shopController.getProductList);
-shopRoute.post('/addProduct', imageService.saveSingleImg(), shopController.createProduct);
+shopRoute.post('/addProduct', imageService.saveSingleImg('procuct'), shopController.createProduct);
 export default shopRoute;

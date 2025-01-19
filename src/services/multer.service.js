@@ -2,12 +2,12 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 class imageHandler {
-    saveSingleImg() {
+    saveSingleImg(folder) {
         try {
         const storage = multer.diskStorage({
             destination: (req, file, cb) => {
                 const uploadDir = 'image/';
-                const uploadPath = path.join(uploadDir);
+                const uploadPath = path.join(uploadDir,folder);
                 console.log("Go here 3", uploadPath)
 
                 // Kiểm tra và tạo thư mục nếu không tồn tại

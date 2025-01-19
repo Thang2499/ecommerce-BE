@@ -40,6 +40,7 @@ const shopController = {
             const mainImagePath = image[0].path;
             const uploadedMainImage = await cloudinaryService.postSingleImage(mainImagePath, 'products');
             const mainImageUrl = uploadedMainImage.secure_url;
+            
             // Upload detail images to Cloudinary
             const detailImageUrls = [];
             if (imageDetail) {
