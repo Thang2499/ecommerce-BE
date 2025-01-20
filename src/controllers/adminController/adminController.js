@@ -20,44 +20,63 @@ const adminController = {
                 sameSite: 'Lax',
                 maxAge: 24 * 60 * 60 * 1000
             })
-            return res.status(200).json({
+            return res.json({
                 message: 'Dang nhap thanh cong',
                 accessToken,
                 admin
             });
         }
         catch (err) {
-            return res.status(400).json({ message: `Unknown bug, ${err.message}` });
+            return res.status(400).send(err.message);
         }
     },
-    approve_ADMIN: async (req, res) => {
+    create_ADMIN: async (req, res) => {
         try {
-            const { id } = req.params;
-            /* const approveAdmin = */await adminModel.findByIdAndUpdate({ _id: id }, { requesting: false, isActived: true, role: 'ADMIN' }, { new: true });
-            return res.status(200).json({ message: 'Approve thanh cong' });
+            const { email, password, name, phone, address, gender } = req.body;
+
+            const hashPassword = kryptoService.encrypt(password);
+
+            const approvedAdmin = new adminModel({
+                email,
+                password: hashPassword,
+                name,
+                phone,
+                address,
+                gender: gender || '',
+                role: 'ADMIN',
+                isActived: true
+            });
+
+            await approvedAdmin.save();
+
+            return res.send('tao ADMIN thanh cong');
         }
         catch (err) {
-            return res.status(400).json({ message: err.message });
+            return res.status(400).send(err.message);
         }
     },
-    approve_READ_ONLY: async (req, res) => {
+    create_READ_ONLY: async (req, res) => {
         try {
-            const { id } = req.params;
-            /* const approveAdmin = */await adminModel.findByIdAndUpdate({ _id: id }, { requesting: false, isActived: true, role: 'READ_ONLY' }, { new: true });
-            return res.status(200).json({ message: 'Approve thanh cong' });
+            const { email, password, name, phone, address, gender } = req.body;
+
+            const hashPassword = kryptoService.encrypt(password);
+
+            const approveReadOnly = new adminModel({
+                email,
+                password: hashPassword,
+                name,
+                phone,
+                address,
+                gender: gender || '',
+                isActived: true
+            });
+
+            await approveReadOnly.save();
+
+            return res.send('tao READ_ONLY thanh cong');
         }
         catch (err) {
-            return res.status(400).json({ message: err.message });
-        }
-    },
-    reject: async (req, res) => {
-        try {
-            const { id } = req.params;
-            /* const rejectAdmin = */await adminModel.findByIdAndUpdate({ _id: id }, { requesting: false, isActived: false }, { new: true });
-            return res.status(200).json({ message: 'Reject thanh cong' });
-        }
-        catch (err) {
-            return res.status(400).json({ message: err.message });
+            return res.status(400).send(err.message);
         }
     },
 }
