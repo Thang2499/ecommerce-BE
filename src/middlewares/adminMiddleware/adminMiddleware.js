@@ -1,6 +1,7 @@
 import fs from "fs";
 import adminModel from "../../models/adminModel.js";
 import kryptoService from "../../utils/hashing.js";
+import tokenService from "../../services/jwt.service.js";
 
 const filePath = fs.realpathSync('./');
 
@@ -32,52 +33,41 @@ const adminMiddleware = {
             next();
 
         } catch (err) {
-            return res.status(400).json({ message: err.message });
+            return res.status(400).send(err.message);
         }
     },
-    register: async (req, res, next) => {
+    create: async (req, res, next) => {
         try {
-            const { name, email, password, phone } = req.body;
+            const token = req.headers.authorization.split(' ')[1];
+            const { email, password, name, phone, address } = req.body;
 
-            if (!name || !email || !password || !phone) {
-                throw Error('Vui long dien day du thong tin dang ky');
-            }
+            const decodedToken = tokenService.verifyToken(token);
 
-            const admin = await adminModel.findOne({ email });
-
-            if (admin) {
-                throw Error('Email da ton tai');
-            }
-
-            next();
-        }
-        catch (err) {
-            if(req.file) {
-                fs.unlinkSync(`${filePath}\\images\\avatar\\${req.file.filename}`)
-            }
-            return res.status(400).json({ message: err.message });
-        }
-    },
-    request: async (req, res, next) => {
-        try {
-            const { token } = req.headers.authorization.split(' ')[1];
-            const { id } = req.params;
-
-            const admin = tokenService.verifyToken(token);
-            const requester = await adminModel.findOne({ _id: id });
+            const admin = await adminModel.findOne({ email: decodedToken.admin.email });
 
             if (admin.role !== 'SUPER_ADMIN' || !admin.isActived) {
-                throw Error('Ban khong co quyen');
+                return res.send('Ban khong co quyen');
             }
 
-            if(!requester || !requester.requesting) {
-                throw Error('Tai khoan khong ton tai hoac chua duoc kich hoat');
+            if (!email || !password || !name || !phone || !address) {
+                return res.send('Vui long dien day du thong tin');
+            }
+
+            const duplicate = await adminModel.findOne({
+                $or: [
+                    { email },
+                    { name }
+                ]
+            });
+
+            if (duplicate) {
+                return res.send('Tai khoan da ton tai');
             }
 
             next();
         }
         catch (err) {
-            return res.status(400).json({ message: err.message });
+            return res.status(400).send(err.message);
         }
     }
 }

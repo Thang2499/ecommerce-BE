@@ -1,14 +1,11 @@
 import mongoose from "mongoose";
 const roles = ["SUPER_ADMIN", "ADMIN", "READ_ONLY"];
+const genders = ["M", "F", ""];
 const adminSchema = new mongoose.Schema({
     name: {
         type: String,
         unique: true,
-        trim: true
-        // require:true
-    },
-    email: {
-        type: String,
+        trim: true,
         require: true
     },
     password: {
@@ -18,27 +15,31 @@ const adminSchema = new mongoose.Schema({
     role: {
         type: String,
         enum: roles,
-        default: "ADMIN",
+        default: "READ_ONLY",
         require: true
+    },
+    email: {
+        type: String,
+        unique: true,
+        // require: true
     },
     phone: {
         type: String,
-        // require:true
+        require: true
     },
     address: {
-        type: String
+        type: String,
+        require: true
     },
     gender: {
-        type: String
+        type: String,
+        enum: genders,
+        default: ""
     },
     isActived: {
         type: Boolean,
         default: false
     },
-    requesting: {
-        type: Boolean,
-        default: true
-    }
 })
 
 const adminModel = mongoose.model('admins', adminSchema);
