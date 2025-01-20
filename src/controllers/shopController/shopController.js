@@ -1,7 +1,6 @@
 import productModel from "../../models/productModel.js";
 import shopModel from "../../models/shopModel.js";
 import cloudinaryService from "../../services/cloudinary.service.js";
-import fs from 'fs';
 const shopController = {
     getShopProfile: async (req, res) =>{
         const {id} = req.body;
@@ -33,19 +32,16 @@ const shopController = {
         const { name, price, description, category,shopId } = req.body;
         const { image, imageDetail } = req.files;
         try {
-            if (!image) {
+            if (!image || !image[0].buffer) {
                 return res.status(400).json({ message: 'Please upload the main image.' });
             }
-            // Upload main image to Cloudinary
-            const mainImagePath = image[0].path;
+            const mainImagePath = image[0];
             const uploadedMainImage = await cloudinaryService.postSingleImage(mainImagePath, 'products');
             const mainImageUrl = uploadedMainImage.secure_url;
             
-            // Upload detail images to Cloudinary
             const detailImageUrls = [];
             if (imageDetail) {
                 const uploadedDetailImage = await cloudinaryService.postMultipleImages(imageDetail, 'products');
-                // Lưu trữ URL của ảnh chi tiết
                 uploadedDetailImage.forEach(img => detailImageUrls.push(img.secure_url));
             }
             const newProduct = new productModel({
