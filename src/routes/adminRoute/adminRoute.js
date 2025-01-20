@@ -9,13 +9,14 @@ import manageShopController from '../../controllers/adminController/adminControl
 
 const adminRoute = express.Router();
 adminRoute.post('/login', adminMiddleware.checkLogin, adminController.login);
-adminRoute.post('/signup', imageService.saveSingleImg('avatar'), adminMiddleware.register, adminController.register);
+adminRoute.post('/signup', imageService.saveSingleImg(), adminMiddleware.register, adminController.register);
+adminRoute.post('/getAdminList', adminController.register);
 adminRoute.post('/approve/admin', adminMiddleware.request, adminController.approve_ADMIN);
 adminRoute.post('/approve/read-only', adminMiddleware.request, adminController.approve_READ_ONLY);
 
 // category
-adminRoute.post('/category/create', imageService.saveSingleImg('category'), categoryMiddleware.create, categoryController.create);
-adminRoute.put('/category/update', imageService.saveSingleImg('category'), categoryMiddleware.update, categoryController.update);
+adminRoute.post('/category/create', imageService.saveSingleImg(), categoryMiddleware.create, categoryController.create);
+adminRoute.put('/category/update', imageService.saveSingleImg(), categoryMiddleware.update, categoryController.update);
 adminRoute.delete('/category/delete', categoryMiddleware.delete, categoryController.delete);
 
 // manage shop
