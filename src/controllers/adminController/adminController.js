@@ -2,6 +2,7 @@ import fs from 'fs';
 import adminModel from "../../models/adminModel.js";
 import tokenService from "../../services/jwt.service.js";
 import kryptoService from "../../utils/hashing.js";
+import cloudinaryService from '../../services/cloudinary.service.js';
 
 const filePath = fs.realpathSync('./');
 

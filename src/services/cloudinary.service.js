@@ -1,10 +1,8 @@
 import { v2 as cloudinary } from 'cloudinary';
 import { config } from 'dotenv';
-import fs from 'fs';
+import stream from 'stream';
 
 config();
-
-// tạo thư mục cloudinary mới
 const cloudinaryConfig = {
     cloud_name: process.env.cloudinary_cloud_name,
     api_key: process.env.cloudinary_api_key,
@@ -12,73 +10,58 @@ const cloudinaryConfig = {
 }
 cloudinary.config(cloudinaryConfig);
 
-// 1 image at a time
 class imageHandler {
-    // anh nghĩ tên folder trên cloudinary khai báo cứng luôn như: const folderCloudinary = "imageSource" rồi gán vào param của methods luôn, tránh trường hợp ghi lại nhiều lần sai tên folder
-    async postSingleImage(filePath, folder) {
-        try {
-            const res = await cloudinary.uploader.upload(filePath, {
-                public_id: `${Date.now()}_${Math.floor(Math.random() * 1000)}`,
-                folder: '/e_commerce/' + folder || ''
+  
+    async postSingleImage(file, folder) {
+        return new Promise((resolve, reject) => {
+            const uploadStream = cloudinary.uploader.upload_stream({
+                public_id: `${Date.now()}_${Math.random().toString(36).substring(7)}`,
+                folder: '/e_commerce/' + folder
+            }, (error, result) => {
+                if (error) {
+                    reject(error);  
+                } else {
+                    resolve(result); 
+                }
             });
-            return res;
-        } catch (err) {
-            try {
-                // delete the file if it fails to upload
-                fs.unlinkSync(filePath);
-            } catch (unlinkErr) {
-                console.error('Failed to delete local file:', unlinkErr);
-            }
-            return err;
-        }
+    
+            const bufferStream = new stream.PassThrough();
+            bufferStream.end(file.buffer); 
+    
+            bufferStream.pipe(uploadStream);  
+        });
     }
 
-    // usage:
-    // const imageData = await cloudinaryService.postSingleImage(`filePath, 'folder')
-    // let image = imageData.url
-    // 
-    // delete filePath
-    // 
-    // fs.unlinkSync(`filePath`)
-    // console.log(image) to print the image URL
-    // ---------------------------------------------------------------------------------------------------------------------
-
-    // multiple images at a time
     async postMultipleImages(imagesPath, folder) {
-        let result = [];
-        //Nhận vào 1 mảng các url image và map ra từng url
-        const uploadMultipleImages = imagesPath.map(async (filePath) => {
-            try {
-                const response = await cloudinary.uploader.upload(filePath, {
-                    public_id: `${Date.now()}_${Math.floor(Math.random() * 1000)}`,
-                    folder: '/e_commerce/' + folder
-                })
-                result.push(response);  // thêm vào result từng url image được cloudinary trả về
-                return response; // trả về từng url image từ cloudinary
-            } catch (error) {
+        let result = []; 
+        const uploadPromises = imagesPath.map((file) => {
+            return new Promise((resolve, reject) => {
                 try {
-                    fs.unlinkSync(filePath);
-                } catch (unlinkErr) {
-                    console.error(`Failed to delete local file: ${filePath}`, unlinkErr);
+                    const bufferStream = new stream.PassThrough();
+                    bufferStream.end(file.buffer);  
+    
+                    // Sử dụng upload_stream để upload ảnh lên Cloudinary
+                    const uploadStream = cloudinary.uploader.upload_stream({
+                        public_id: `${Date.now()}_${Math.random().toString(36).substring(7)}`, 
+                        folder: '/e_commerce/' + folder, 
+                    }, (error, uploadResult) => {
+                        if (error) {
+                            return reject(error);  
+                        }
+                        result.push(uploadResult); 
+                        resolve(uploadResult); 
+                    });
+    
+                    bufferStream.pipe(uploadStream);
+                } catch (error) {
+                    reject(error);  
                 }
-                return { error: err };
-            }
-        })
-        await Promise.all(uploadMultipleImages); // đợi khi tất cả url image tải lên được cloudinary trả về mới trả ra result
+            });
+        });
+    
+        await Promise.all(uploadPromises);
+    
         return result;
-
-        // for (const image in imagesPath) {
-        //     const response = await cloudinary.uploader.upload(imagesPath[image], { public_id: Math.ceil(Math.random() * Date.now() + Math.random() * Date.now()), folder }, ((err, res) => {
-        //         if (err) {
-        //             // delete the file if it fails to upload
-        //             result.map(e => fs.unlinkSync(e))
-        //             return err.error;
-        //         }
-        //     }));
-        //     result.push(response)
-        // }
-        // return result;
-
     }
 }
 const cloudinaryService = new imageHandler();
