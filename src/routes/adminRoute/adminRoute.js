@@ -9,9 +9,8 @@ import manageShopController from '../../controllers/adminController/adminControl
 
 const adminRoute = express.Router();
 adminRoute.post('/login', adminMiddleware.checkLogin, adminController.login);
-adminRoute.post('/signup', imageService.saveSingleImg('avatar'), adminMiddleware.register, adminController.register);
-adminRoute.post('/approve/admin', adminMiddleware.request, adminController.approve_ADMIN);
-adminRoute.post('/approve/read-only', adminMiddleware.request, adminController.approve_READ_ONLY);
+adminRoute.post('/create/admin', adminMiddleware.create, adminController.create_ADMIN);
+adminRoute.post('/create/read-only', adminMiddleware.create, adminController.create_READ_ONLY);
 
 // category
 adminRoute.post('/category/create', imageService.saveSingleImg('category'), categoryMiddleware.create, categoryController.create);
