@@ -8,20 +8,24 @@ const adminSchema = new mongoose.Schema({
         trim: true,
         require: true
     },
+    email: {
+        type: String,
+        unique: true,
+        // require: true
+    },
     password: {
         type: String,
         require: true
+    },
+    avatar: {
+        type: String, // url
+        default: "https://freesvg.org/img/abstract-user-flat-4.png"
     },
     role: {
         type: String,
         enum: roles,
         default: "READ_ONLY",
         require: true
-    },
-    email: {
-        type: String,
-        unique: true,
-        // require: true
     },
     phone: {
         type: String,

@@ -33,17 +33,13 @@ const adminMiddleware = {
             next();
 
         } catch (err) {
-            return res.status(400).send(err.message);
+            return res.send(err.message);
         }
     },
     create: async (req, res, next) => {
         try {
-            const token = req.headers.authorization.split(' ')[1];
             const { email, password, name, phone, address } = req.body;
-
-            // check token có valid hay không; valid thì check real time role có phải là SUPER_ADMIN hay không
-            const decodedToken = tokenService.verifyToken(token);
-            const admin = await adminModel.findOne({ email: decodedToken.admin.email });
+            const admin = req.admin;
 
             if (admin.role !== 'SUPER_ADMIN' || !admin.isActived) {
                 return res.send('Ban khong co quyen');
@@ -70,8 +66,18 @@ const adminMiddleware = {
             next();
         }
         catch (err) {
-            return res.status(400).send(err.message);
+            return res.send(err.message);
         }
-    }
+    },
+    // update: async (req, res, next) => {
+    //     try {
+    //         const admin = req.admin;
+
+    //         next();
+    //     }
+    //     catch (err) {
+    //         return res.send(err.message);
+    //     }
+    // }
 }
 export default adminMiddleware;
