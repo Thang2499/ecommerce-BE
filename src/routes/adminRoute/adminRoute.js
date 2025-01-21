@@ -1,12 +1,12 @@
 import express from 'express';
 import { imageService } from '../../services/multer.service.js';
+import adminToken from './adminToken.js';
 import adminMiddleware from '../../middlewares/adminMiddleware/adminMiddleware.js';
 import adminController from '../../controllers/adminController/adminController.js';
 import categoryMiddleware from '../../middlewares/adminMiddleware/adminMiddleware.category.js';
 import categoryController from '../../controllers/adminController/adminController.category.js';
 import manageShopMiddleware from '../../middlewares/adminMiddleware/adminMiddleware.manageShop.js';
 import manageShopController from '../../controllers/adminController/adminController.manageShop.js';
-import adminToken from './adminToken.js';
 
 const adminRoute = express.Router();
 adminRoute.post('/login', adminMiddleware.checkLogin, adminController.login);
@@ -27,7 +27,7 @@ adminRoute.post('/shop/reject/:id', manageShopMiddleware.request, manageShopCont
 adminRoute.get('/shop/listActive', manageShopController.getListActiveShop);
 
 // manage user
-adminRoute.get('/user/list', manageShopMiddleware.getListUser, manageShopController.getListUser);
+adminRoute.get('/user/list', adminToken, manageShopController.getListUser);
 
 //manage admin
 

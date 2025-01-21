@@ -53,16 +53,16 @@ const manageShopMiddleware = {
             return res.status(400).json({ message: err.message });
         }
     },
-    getListUser: async (req, res, next) => {
-        try {
-            const token = req.headers.authorization.split(' ')[1];
-            const decodedToken = tokenService.verifyToken(null);
-            const admin = await userModel.findOne({ email: decodedToken.admin.email });
-        }
-        catch (err) {
-            return res.send(err.message);
-        }
-    }
+    // getListUser: async (req, res, next) => {
+    //     try {
+    //         const token = req.headers.authorization.split(' ')[1];
+    //         const decodedToken = tokenService.verifyToken(null);
+    //         const admin = await userModel.findOne({ email: decodedToken.admin.email });
+    //     }
+    //     catch (err) {
+    //         return res.send(err.message);
+    //     }
+    // }
 };
 
 export default manageShopMiddleware;
