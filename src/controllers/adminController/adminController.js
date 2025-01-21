@@ -30,6 +30,38 @@ const adminController = {
             return res.status(400).send(err.message);
         }
     },
+    listAdmin: async (req, res) => {
+        const { page = 1, limit = 20 } = req.query; 
+    
+        const startPo = (page - 1) * limit; 
+        const endPo = startPo + limit;   
+    
+        try {
+            const totalAdmin = await adminModel.countDocuments();
+    
+            const totalPages = Math.ceil(totalAdmin / limit);
+    
+            const adminList = await adminModel
+                .find()
+                .skip(startPo)
+                .limit(limit);
+    
+            if (adminList.length > 0) {
+                res.status(200).send({
+                    adminList,
+                    currentPage: page,
+                    totalPages,
+                    totalAdmin,
+                    limit
+                });
+            } else {
+                res.status(404).send({ message: "No admin list found for this shop." });
+            }
+        } catch (error) {
+            console.error(error);
+            res.status(500).send({ message: "Error while getting admin list" });
+        }
+},
     create_ADMIN: async (req, res) => {
         try {
             const { email, password, name, phone, address, gender } = req.body;

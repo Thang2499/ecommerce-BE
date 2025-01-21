@@ -16,7 +16,6 @@ const shopController = {
         }
     },
      getProductList :async (req, res) => {
-
         const { id } = req.body;  // Lấy id từ body
         const { page = 1, limit = 20 } = req.query;  // Lấy page và limit từ query params
     

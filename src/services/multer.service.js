@@ -37,7 +37,8 @@ class imageHandler {
                     return res.status(400).json({ error: 'Error uploading file', details: err });
                 }
                 if (!req.files || !req.files.image || !req.files.image[0].buffer) {
-                    return res.status(400).json({ error: 'No image file provided or image file is missing buffer' });
+                    next();  
+                    // return res.status(400).json({ error: 'No image file provided or image file is missing buffer' });
                 }
 
                 next();
