@@ -6,4 +6,6 @@ const shopRoute = express.Router();
 shopRoute.post('/shopProfile', shopController.getShopProfile);
 shopRoute.post('/productList', shopController.getProductList);
 shopRoute.post('/addProduct', imageService.saveSingleImg(), shopController.createProduct);
+shopRoute.put('/updateProduct/:id', imageService.saveSingleImg(), shopController.updateProduct);
+shopRoute.delete('/deleteProduct/:id', imageService.saveSingleImg(), shopController.deleteProduct);
 export default shopRoute;
