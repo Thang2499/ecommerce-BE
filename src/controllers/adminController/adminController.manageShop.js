@@ -2,9 +2,9 @@ import shopModel from "../../models/shopModel.js";
 import userModel from "../../models/userModel.js";
 
 const manageShopController = {
-    getList: async (req, res) => {
+    getListRequestingShop: async (req, res) => {
         try {
-            const listShop = await shopModel.find({ requesting: true });
+            const listShop = await shopModel.find({ requesting: true, isActive: false });
 
             return res.status(200).json({
                 message: 'Danh sach',
@@ -17,7 +17,7 @@ const manageShopController = {
     },
     getListActiveShop: async (req, res) => {
         try {
-            const listShop = await shopModel.find({ requesting: false });
+            const listShop = await shopModel.find({ requesting: false, isActive: true });
 
             return res.status(200).json({
                 message: 'Danh sach',
@@ -25,43 +25,40 @@ const manageShopController = {
             });
         }
         catch (err) {
-            return res.status(400).json({ message: err.message });
+            return res.send(err.message);
         }
     },
     approve: async (req, res) => {
-        const  user  = req.user;
+        const shop = req.shop;
         try {
-          await shopModel.findOneAndUpdate({ userId: user._id }, { isActive: true, requesting: false }, { new: true });
+          /* const approvedShop = */await shopModel.findOneAndUpdate({ _id: shop._id }, { isActive: true, requesting: false }, { new: true });
 
-            return res.status(200).json({ message: 'Duyet thanh cong' });
+            return res.send('Duyet thanh cong');
         }
         catch (err) {
-            return res.status(400).json({ message: err.message });
+            return res.send(err.message)
         }
     },
     reject: async (req, res) => {
-        const { user } = req.user;
+        const shop = req.shop;
         try {
-            /* const approvedShop = */await shopModel.findOneAndUpdate({ userId: user._id }, { requesting: false }, { new: true });
-            return res.status(200).json({ message: 'Tu choi thanh cong' });
+            /* const approvedShop = */await shopModel.findOneAndUpdate({ _id: shop._id }, { requesting: false }, { new: true });
+            return res.send('Tu choi thanh cong');
         }
         catch (err) {
-            return res.status(400).json({ message: err.message });
+            return res.send(err.message);
         }
     },
-    getListUser: async (req, res) => {
+    delete: async (req, res) => {
+        const shop = req.shop;
         try {
-            const listUser = await userModel.find({ isActived: true });
-
-            return res.status(200).json({
-                message: 'Danh sach',
-                listUser: listUser || []
-            });
+            await shopModel.findOneAndDelete({ _id: shop._id });
+            return res.send('Xoa thanh cong');
         }
         catch (err) {
-            return res.status(400).json({ message: err.message });
+            return res.send(err.message);
         }
-    },
+    }
 };
 
 export default manageShopController;

@@ -40,7 +40,7 @@ const adminSchema = new mongoose.Schema({
         enum: genders,
         default: ""
     },
-    isActived: {
+    isActive: {
         type: Boolean,
         default: false
     },

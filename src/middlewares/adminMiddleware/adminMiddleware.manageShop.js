@@ -5,49 +5,48 @@ import tokenService from "../../services/jwt.service.js";
 const manageShopMiddleware = {
     request: async (req, res, next) => {
         try {
-            const token = req.headers.authorization.split(' ')[1];
             const { id } = req.params;
-            const admin = tokenService.verifyToken(token);
 
-            if (admin.admin.role !== 'SUPER_ADMIN' && admin.admin.role !== 'ADMIN' || !admin.admin.isActived) {
-                throw Error('Ban khong co quyen');
-            }
-
-            const user = await userModel.findOne({ _id: id });
-            if (!user || !user.isActived) {
-                throw Error('Khong tim thay user');
-            }
-
-            const shop = await shopModel.findOne({ userId: user._id });
+            const shop = await shopModel.findOne({ _id: id });
 
             if (!shop) {
-                throw Error('User chua tao shop');
+                return res.send('User chua tao shop');
             }
 
             if (!shop.requesting) {
-                throw Error('Shop chua request');
+                return res.send('Shop chua request');
             }
 
             if (shop.isActive) {
-                throw Error('User da la shop');
+                return res.send('User da la shop');
             }
-            req.user = user;
+
+            req.shop = shop;
+
             next();
         }
         catch (err) {
-            return res.status(400).json({ message: err.message });
+            return res.send(err.message);
         }
     },
-    disable: async (req, res) => {
+    delete: async (req, res) => {
         try {
-            const token = req.headers.authorization.split(' ')[1];
             const { id } = req.params;
 
-            const admin = tokenService.verifyToken(token);
+            const shop = await shopModel.findOne({ _id: id });
 
-            if (admin.role !== 'SUPER_ADMIN' && admin.role !== 'ADMIN' || !admin.isActived) {
-                throw Error('Ban khong co quyen');
+            if(!shop) {
+                return res.send('Shop khong ton tai');
             }
+
+            if(!shop.isActive || shop.requesting) {
+                return res.send('Shop khong du dieu kien de xoa');
+            }
+
+            req.shop = shop;
+
+            next();
+=======
         }
         catch (err) {
             return res.status(400).json({ message: err.message });
@@ -59,11 +58,12 @@ const manageShopMiddleware = {
             const decodedToken = tokenService.verifyToken(null);
             const admin = await userModel.findOne({ email: decodedToken.admin.email });
           
+
         }
         catch (err) {
             return res.send(err.message);
         }
-    }
+    },
 };
 
 export default manageShopMiddleware;
