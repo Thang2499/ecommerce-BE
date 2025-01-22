@@ -35,6 +35,5 @@ adminRoute.post('/shop/delete/:id', adminToken, manageShopMiddleware.delete, man
 // manage user
 adminRoute.get('/user/list', adminToken, manageUserController.getListUser);
 
-//manage admin
 
 export default adminRoute;

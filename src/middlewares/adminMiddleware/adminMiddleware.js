@@ -20,10 +20,6 @@ const adminMiddleware = {
                 return res.send('Tai khoan khong ton tai');
             }
 
-            if (admin.requesting) {
-                return res.send('Tai khoan chua duoc kich hoat');
-            }
-
             const comparePassword = kryptoService.decrypt(password, admin.password);
 
             if (!comparePassword) {
