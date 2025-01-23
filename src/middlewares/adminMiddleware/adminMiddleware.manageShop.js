@@ -1,12 +1,9 @@
-import userModel from "../../models/userModel.js";
 import shopModel from "../../models/shopModel.js";
-import tokenService from "../../services/jwt.service.js";
 
 const manageShopMiddleware = {
     request: async (req, res, next) => {
+        const { id } = req.params;
         try {
-            const { id } = req.params;
-
             const shop = await shopModel.findOne({ _id: id });
 
             if (!shop) {
@@ -30,9 +27,8 @@ const manageShopMiddleware = {
         }
     },
     delete: async (req, res) => {
+        const { id } = req.params;
         try {
-            const { id } = req.params;
-
             const shop = await shopModel.findOne({ _id: id });
 
             if(!shop) {
