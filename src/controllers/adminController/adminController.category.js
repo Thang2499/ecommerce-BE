@@ -64,7 +64,7 @@ const categoryController = {
         const category = req.category;
         try {
             if (!category.parentId) {
-                await categoryModel.deleteMany({ parentId: id })
+                await categoryModel.deleteMany({ parentId: category._id })
             }
             
             await categoryModel.findByIdAndDelete(category._id);
