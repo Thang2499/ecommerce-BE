@@ -8,7 +8,9 @@ const categoryMiddleware = {
             const token = req.headers.authorization.split(' ')[1];
 
             const admin = tokenService.verifyToken(token);
-            if (admin.admin.isActived === false || admin.admin.role !== 'ADMIN') {
+            if (
+                // admin.admin.isActived === false ||
+                 admin.admin.role !== 'ADMIN' && admin.admin.role !== 'SUPER_ADMIN') {
                 throw Error('Ban khong co quyen');
             }
 
@@ -59,7 +61,7 @@ const categoryMiddleware = {
 
             const admin = tokenService.verifyToken(token);
 
-            if (admin.admin.role !== 'SUPER_ADMIN' || !admin.admin.isActived) {
+            if (admin.admin.role !== 'SUPER_ADMIN' && !admin.admin.isActived) {
                 throw Error('Ban khong co quyen');
             }
 

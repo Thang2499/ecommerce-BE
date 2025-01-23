@@ -64,8 +64,8 @@ const categoryController = {
     delete: async (req, res) => {
         try {
             const { id } = req.params;
-
             await categoryModel.findOneAndDelete({ _id: id });
+            res.status(200).json({ message: 'Xóa danh mục thành công' });
         }
         catch (err) {
             return res.status(400).json({ message: err.message });

@@ -46,7 +46,7 @@ const manageShopMiddleware = {
             req.shop = shop;
 
             next();
-=======
+
         }
         catch (err) {
             return res.status(400).json({ message: err.message });
