@@ -69,7 +69,7 @@ const categoryController = {
             
             await categoryModel.findByIdAndDelete(category._id);
 
-            res.send('Xoa thanh cong')
+            return res.send('Xoa thanh cong')
         }
         catch (err) {
             return res.send(err.message);
