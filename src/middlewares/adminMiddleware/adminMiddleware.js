@@ -1,14 +1,10 @@
-import fs from "fs";
 import adminModel from "../../models/adminModel.js";
 import kryptoService from "../../utils/hashing.js";
-import tokenService from "../../services/jwt.service.js";
-
-const filePath = fs.realpathSync('./');
 
 const adminMiddleware = {
     checkLogin: async (req, res, next) => {
+        const { email, password } = req.body;
         try {
-            const { email, password } = req.body;
 
             if (!email || !password) {
                 return res.send('Vui long dien day du thong tin dang nhap');
@@ -33,9 +29,9 @@ const adminMiddleware = {
         }
     },
     create: async (req, res, next) => {
+        const { email, password, name, phone, address } = req.body;
+        const admin = req.admin;
         try {
-            const { email, password, name, phone, address } = req.body;
-            const admin = req.admin;
 
             if (admin.role !== 'SUPER_ADMIN' || !admin.isActived) {
                 return res.send('Ban khong co quyen');

@@ -1,5 +1,4 @@
 import shopModel from "../../models/shopModel.js";
-import userModel from "../../models/userModel.js";
 
 const manageShopController = {
     getListRequestingShop: async (req, res) => {
