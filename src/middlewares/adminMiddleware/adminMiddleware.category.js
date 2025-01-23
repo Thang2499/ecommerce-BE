@@ -47,6 +47,8 @@ const categoryMiddleware = {
             if (!category) {
                 return res.send('Danh muc khong ton tai');
             }
+            
+            req.category = category;
 
             next();
         }

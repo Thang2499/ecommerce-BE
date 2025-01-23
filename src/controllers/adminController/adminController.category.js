@@ -61,9 +61,15 @@ const categoryController = {
         }
     },
     delete: async (req, res) => {
-        const { id } = req.params;
+        const category = req.category;
         try {
-            await categoryModel.findOneAndDelete({ _id: id });
+            if (!category.parentId) {
+                await categoryModel.deleteMany({ parentId: id })
+            }
+            
+            await categoryModel.findByIdAndDelete(category._id);
+
+            res.send('Xoa thanh cong')
         }
         catch (err) {
             return res.send(err.message);

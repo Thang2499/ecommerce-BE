@@ -12,7 +12,7 @@ const manageUserController = {
     delete: async (req, res) => {
         const user = req.user;
         try {
-            userModel.findOneAndDelete({ _id: user._id });
+            await userModel.findByIdAndDelete(user._id)
 
             return res.send("Delete user successfully!");
         } catch (err) {
