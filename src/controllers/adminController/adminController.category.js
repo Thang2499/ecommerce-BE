@@ -1,53 +1,57 @@
-import fs from 'fs';
 import categoryModel from "../../models/categoryModel.js";
 import cloudinaryService from "../../services/cloudinary.service.js";
-
-const filePath = fs.realpathSync('./')
 
 const categoryController = {
     create: async (req, res) => {
         try {
-            const { name, description, parentId } = req.body;
-
             let categoryImg = 'https://freesvg.org/img/abstract-user-flat-4.png';
             // anh có thể đặt link default img là link khác cho category, đây là link tạm thời em để
-            if (req.file) {
-                const categoryData = await cloudinaryService.postSingleImage(`${filePath}\\${req.file.path}`, 'category');
-                categoryImg = categoryData.url;
-                fs.unlinkSync(`${filePath}\\${req.file.path}`)
+            // if (image) {
+            //     const mainImagePath = image[0];
+            //     const uploadedMainImage = await cloudinaryService.postSingleImage(mainImagePath, 'category');
+            //     categoryImg = uploadedMainImage.secure_url;
+            // }
+            if (req.files && req.files.image) {
+                const image = req.files.image;
+                const mainImagePath = image[0]; // Đảm bảo rằng image có cấu trúc đúng nếu là array
+                const uploadedMainImage = await cloudinaryService.postSingleImage(mainImagePath, 'category');
+                categoryImg = uploadedMainImage.secure_url;
             }
 
+
+            const { name, description, parentId } = req.body;
             const admin = req.admin;
 
             const category = new categoryModel({
                 name: name,
                 description: description || '',
-                image: categoryImg || '',
+                image: categoryImg,
                 parentId: parentId || null,
-                createdBy: admin.admin._id,
-                role: admin.admin.role
+                createdBy: admin._id,
+                role: admin.role
             });
 
             await category.save();
 
-            return res.status(200).json({ message: 'Tạo danh mục thành công' });
+            return res.send('Tạo danh mục thành công');
         } catch (err) {
-            return res.status(400).json({ message: err.message });
+            return res.send(err.message);
         }
     },
     update: async (req, res) => {
+        const { id } = req.params;
+        const { name, description } = req.body;
+        const { image } = req.files;
         try {
-            const { id } = req.params;
-            const { name, description } = req.body;
+            const oldCategory = await categoryModel.findOne({ _id: id });
 
             let categoryImg;
-            if (req.file) {
-                const categoryData = await cloudinaryService.postSingleImage(`${filePath}\\${req.file.path}`, 'category');
-                categoryImg = categoryData.url;
-                fs.unlinkSync(`${filePath}\\${req.file.path}`)
+            if (image) {
+                const mainImagePath = image[0];
+                const uploadedMainImage = await cloudinaryService.postSingleImage(mainImagePath, 'category');
+                categoryImg = uploadedMainImage.secure_url;
             }
 
-            const oldCategory = await categoryModel.findOne({ _id: id });
 
             const updatedCatefory = await categoryModel.findOneAndUpdate({ _id: id }, {
                 name: name || oldCategory.name,
@@ -55,20 +59,25 @@ const categoryController = {
                 image: categoryImg || oldCategory.image
             }, { new: true });
 
-            return res.status(200).json({ message: 'Sửa danh mục thành công', category: updatedCatefory });
+            return res.send(updatedCatefory);
         }
         catch (err) {
-            return res.status(400).json({ message: err.message });
+            return res.send(err.message);
         }
     },
     delete: async (req, res) => {
+        const category = req.category;
         try {
-            const { id } = req.params;
-            await categoryModel.findOneAndDelete({ _id: id });
-            res.status(200).json({ message: 'Xóa danh mục thành công' });
+            if (!category.parentId) {
+                await categoryModel.deleteMany({ parentId: category._id })
+            }
+            
+            await categoryModel.findByIdAndDelete(category._id);
+
+            return res.send('Xoa thanh cong')
         }
         catch (err) {
-            return res.status(400).json({ message: err.message });
+            return res.send(err.message);
         }
     }
 }

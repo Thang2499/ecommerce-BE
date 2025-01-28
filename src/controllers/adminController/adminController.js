@@ -1,16 +1,13 @@
-import fs from 'fs';
 import adminModel from "../../models/adminModel.js";
 import tokenService from "../../services/jwt.service.js";
 import kryptoService from "../../utils/hashing.js";
 import cloudinaryService from '../../services/cloudinary.service.js';
 
-const filePath = fs.realpathSync('./');
-
 const adminController = {
     login: async (req, res) => {
+        const { email } = req.body;
         try {
-            const { email } = req.body;
-            const admin = await adminModel.findOne({ email, isActived: true });
+            const admin = await adminModel.findOne({ email, isActive: true });
             const accessToken = tokenService.signAccessToken({ admin });
             const refreshToken = tokenService.signRefreshToken({ admin });
             res.cookie('refresh-Token', refreshToken, {
@@ -63,9 +60,8 @@ const adminController = {
         }
 },
     create_ADMIN: async (req, res) => {
+        const { email, password, name, phone, address, gender } = req.body;
         try {
-            const { email, password, name, phone, address, gender } = req.body;
-
             const hashPassword = kryptoService.encrypt(password);
 
             const approvedAdmin = new adminModel({
@@ -76,21 +72,20 @@ const adminController = {
                 address,
                 gender: gender || '',
                 role: 'ADMIN',
-                isActived: true
+                isActive: true
             });
 
             await approvedAdmin.save();
 
-            return res.send('tao ADMIN thanh cong');
+            return res.status(201).send('tao ADMIN thanh cong');
         }
         catch (err) {
             return res.send(err.message);
         }
     },
     create_READ_ONLY: async (req, res) => {
+        const { email, password, name, phone, address, gender } = req.body;
         try {
-            const { email, password, name, phone, address, gender } = req.body;
-
             const hashPassword = kryptoService.encrypt(password);
 
             const approveReadOnly = new adminModel({
@@ -100,22 +95,22 @@ const adminController = {
                 phone,
                 address,
                 gender: gender || '',
-                isActived: true
+                isActive: true
             });
 
             await approveReadOnly.save();
 
-            return res.send('tao READ_ONLY thanh cong');
+            return res.status(201).send('tao READ_ONLY thanh cong');
         }
         catch (err) {
             return res.send(err.message);
         }
     },
     update: async (req, res) => {
+        const { password, phone, address, gender } = req.body;
+        const admin = req.admin;
+        const { image } = req.files;
         try {
-            const { password, phone, address, gender } = req.body;
-            const admin = req.admin;
-            const { image } = req.files;
             let mainImageUrl;
             let newPassword
 
