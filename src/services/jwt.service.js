@@ -32,17 +32,17 @@ class tokenHandler {
     // hàm lấy lại refreshToken khi accessToken hết hạn cho users
     refreshAccessToken = async (req, res) => {
         try {
-            const { refreshToken } = req.signedCookies;
+            const getRefreshToken  = req.cookies;
+            const refreshToken = getRefreshToken['refresh-Token'];
             if (!refreshToken) {
                 return res.status(401).json({ message: 'Refresh token is required' });
             }
-
-            jwt.verify(refreshToken, process.env.SECRET_KEY, async (err, decoded) => {
+          jwt.verify(refreshToken, process.env.SECRET_KEY, async (err, decoded) => {
                 if (err) {
                     return res.status(403).json({ message: 'Invalid refresh token' });
                 }
-                // const userId = decoded.user._id;
                 const { _id, role } = decoded.user;
+                
                 let user;
                 if (role === 'ADMIN' || role === 'SUPER_ADMIN' || role === 'READ_ONLY') {
                     user = await adminModel.findById(_id);
@@ -59,7 +59,7 @@ class tokenHandler {
                 }
                 const newAccessToken = jwt.sign(
                     { user: user },
-                    process.env.secretKey,
+                    process.env.SECRET_KEY,
                     { expiresIn: '1d' }
                 );
 

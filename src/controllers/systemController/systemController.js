@@ -1,5 +1,7 @@
 import itemModel from "../../models/itemModel.js";
+import orderModel from "../../models/orderModel.js";
 import productModel from "../../models/productModel.js";
+import shopModel from "../../models/shopModel.js";
 import userModel from "../../models/userModel.js";
 
 const systemController = {
@@ -140,6 +142,133 @@ const systemController = {
         } catch (err) {
             res.send({
                 message: err.message
+            })
+        }
+    },
+    removeFromCart: async (req, res) => {
+        try {
+            const { userId, itemId } = req.body;
+            const deletedItem = await itemModel.findByIdAndDelete(itemId);
+            if (!deletedItem) {
+                return res.status(404).json({
+                    message: 'Không tìm thấy mục trong giỏ hàng.',
+                });
+            };
+            const user = await userModel.findByIdAndUpdate(
+                userId,
+                {
+                    $pull: { cart: { itemId } },
+                },
+                { new: true }
+            );
+            if (!user) {
+                return res.status(404).json({
+                    message: 'Không tìm thấy người dùng.',
+                });
+            };
+            res.status(200).send('Delete success');
+        } catch (err) {
+            res.status(500).json({
+                message: 'Lỗi khi xóa sản phẩm khỏi giỏ hàng.',
+                error: err.message,
+            });
+        }
+    },
+    viewCart: async (req, res) => {
+      
+        try {
+            const user = req.user;
+            const cart = user.cart;
+            const itemIds = cart.map(item => item.itemId);
+          
+            const itemsInCart = await itemModel.find({ _id: { $in: itemIds } }).populate({
+                path: 'productId',
+                model: 'products'
+            });
+            res.status(200).json({
+                success: true,
+                itemsInCart
+            });
+        } catch (error) {
+            console.error('Error fetching cart items:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Failed to fetch cart items',
+            });
+        }
+    },
+    createOrder: async (req, res) => {
+        const { address, selectedPayment, fee } = req.body
+        const user = req.user;
+        try {
+            const userCart = await userModel.findById(user.user._id).populate({
+                path: 'cart.itemId',
+                populate: {
+                    path: 'productId',
+                    select: 'shopId price productName image',
+                },
+            });
+            const itemsByShop = userCart.cart.reduce((acc, cartItem) => {
+                const shopId = cartItem.itemId.productId.shopId.toString();
+                if (!acc[shopId]) acc[shopId] = [];
+                acc[shopId].push(cartItem);
+                return acc;
+            }, {});
+            const orders = [];
+            // const itemIdsToDelete = [];
+            for (const shopId in itemsByShop) {
+                const items = itemsByShop[shopId];
+
+                let totalAmount = items.reduce((sum, item) => {
+                    return parseFloat(item.itemId.unitPrice) * parseFloat(item.itemId.quantity) + parseFloat(sum) + parseFloat(fee);
+                }, 0);
+                if (selectedPayment === 'Momo') {
+                    totalAmount = 0
+                }
+                const order = await orderModel.create({
+                    userId: user.user._id,
+                    shopId,
+                    items: items.map(item => ({
+                        itemId: item.itemId._id,
+                    })),
+                    totalAmount: Number(totalAmount),
+                    paymentMethod: selectedPayment,
+                    shippingAddress: address,
+                });
+
+                orders.push(order);
+            }
+            
+            for (const order of orders) {
+                await shopModel.updateOne(
+                    { _id: order.shopId },
+                    { $push: { orderIds: order._id } }
+                );
+            }
+            await userModel.updateOne(
+                { _id: user.user._id },
+                { cart: [] }
+            );
+            // if (itemIdsToDelete.length > 0) {
+            //     await itemModel.deleteMany({ _id: { $in: itemIdsToDelete } });
+            // }
+            return res.send({
+                message: 'create success',
+            })
+        } catch (error) {
+            return res.send({
+                message: error.message
+            })
+        }
+    },
+    productDetail: async (req,res) => {
+        const id = req.body;
+        try {
+            const product = await productModel.findById(id.id);
+           res.status(200).send(product)
+        } catch (error) {
+            res.status(400).send({
+                message: error.message
             })
         }
     },
