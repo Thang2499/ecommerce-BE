@@ -53,7 +53,6 @@ const systemController = {
     },
     getWistList : async (req, res) => {
         const { id } = req.body;
-
         try {
             const user = await userModel.findById(id).populate('wishlist.productId');
             if(user.wishlist){
@@ -66,21 +65,32 @@ const systemController = {
         }
     },
     addWishList: async (req, res) => {
-        const {id} = req.params;
-        const {wishList} = req.body
+        const { id } = req.params; 
+        const { wishList } = req.body;
+    
         try {
-            const user = await userModel.findByIdAndUpdate(id, {
-                $addToSet: { wishlist: { $each: wishList } }
-            },
-                { new: true })
+            const user = await userModel.findById(id);
+            if (!user) {
+                return res.status(404).send({ message: "User not found" });
+            }
+            const existingProductIds = user.wishlist.map(item => item.productId.toString()); // Lấy danh sách productId đã có
+            const newWishList = wishList.filter(item => !existingProductIds.includes(item.productId)); // Lọc sản phẩm chưa có
+    
+            if (newWishList.length === 0) {
+                return res.status(200).send({ message: "Sản phẩm đã có trong wishlist" });
+            }
+            const updatedUser = await userModel.findByIdAndUpdate(
+                id,
+                { $addToSet: { wishlist: { $each: newWishList } } },
+                { new: true }
+            );
+    
             res.status(200).send({
-                message: 'success',
-                user
-            })
+                message: "Thêm vào wishlist thành công",
+                user: updatedUser
+            });
         } catch (err) {
-            res.send({
-                message: err.message
-            })
+            res.status(500).send({ message: err.message });
         }
     },
     removeFromWishList: async (req, res) => {

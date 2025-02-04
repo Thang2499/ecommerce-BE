@@ -71,6 +71,32 @@ const paymentMethod = {
                 error: error.response ? error.response.data : error.message
             });
         }
-    }
+    },
+    sendMail: async (req, res) => {
+        const { email, orderDetails } = req.body;
+        const htmlContent = `
+          <h1>Thanks for your order!</h1>
+          <p>Order Detail:</p>
+          <ul>
+            ${orderDetails
+              .map(
+                (item) =>
+                  `<li>${item.productId.productName} - Quantity: ${item.quantity} - UnitPrice: $${item.unitPrice} </li>`
+              )
+              .join('')}
+          </ul>
+          <p>Total prce: $${orderDetails.reduce(
+            (total, item) => total + item.unitPrice * item.quantity,
+            0
+          )}</p>
+        `;
+      
+        try {
+          await sendEmail(email, 'Xác nhận đơn hàng từ shop@gmail.com', htmlContent);
+          res.status(200).json({ message: 'Email đã được gửi thành công!' });
+        } catch (error) {
+          res.status(500).json({ message: 'Gửi email thất bại!' });
+        }
+      }
 }
 export default paymentMethod;

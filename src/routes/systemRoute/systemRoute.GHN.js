@@ -10,4 +10,5 @@ manageGHN.get('/provinces',GHNController.getProvinces);
 manageGHN.get('/districts/:province_id',GHNController.getDistricts);
 manageGHN.get('/wards/:district_id',GHNController.getWards);
 manageGHN.post('/shippingFee',GHNController.shippingFee);
+manageGHN.post('/send-email',paymentMethod.sendMail );
 export default manageGHN;

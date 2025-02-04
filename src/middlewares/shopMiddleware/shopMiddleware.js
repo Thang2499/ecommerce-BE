@@ -23,7 +23,7 @@ const shopMiddleware = {
     
             const shopId = await shopModel.findById(user.shopId);
             if(!shopId){
-                res.status(404).send('Shop not found');
+              return  res.status(404).send('Shop not found');
             }
             req.user = user;
     
