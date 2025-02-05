@@ -16,19 +16,20 @@ import manageUserMiddleware from '../../middlewares/adminMiddleware/adminMiddlew
 import manageUserController from '../../controllers/adminController/adminController.user.js';
 
 const adminRoute = express.Router();
-adminRoute.post('/login', adminMiddleware.checkLogin, adminController.login);
-adminRoute.post('/create/admin', adminToken, adminMiddleware.create, adminController.create_ADMIN);
-adminRoute.post('/create/read-only', adminToken, adminMiddleware.create, adminController.create_READ_ONLY);
+adminRoute.post('/login', adminMiddleware.checkLogin, adminController.login); // đã test
+adminRoute.post('/create/admin', adminToken, adminMiddleware.create, adminController.create_ADMIN);// đã test
+adminRoute.post('/create/read-only', adminToken, adminMiddleware.create, adminController.create_READ_ONLY);// đã test
 adminRoute.put('/update', adminToken, imageService.saveSingleImg(), adminController.update);
+adminRoute.get('/listAdmin', adminToken, adminController.listAdmin);
 
 // category
-adminRoute.post('/category/create', adminToken, imageService.saveSingleImg(), categoryMiddleware.create, categoryController.create);
-adminRoute.put('/category/update', adminToken, imageService.saveSingleImg(), categoryMiddleware.update, categoryController.update);
-adminRoute.delete('/category/delete', adminToken, categoryMiddleware.delete, categoryController.delete);
+adminRoute.post('/category/create', adminToken, imageService.saveSingleImg(), categoryMiddleware.create, categoryController.create); // đã test
+adminRoute.put('/category/update', adminToken, imageService.saveSingleImg(), categoryMiddleware.update, categoryController.update); // đã test
+adminRoute.delete('/category/delete/:id', adminToken, categoryMiddleware.delete, categoryController.delete); // đã test
 
 // manage shop
-adminRoute.get('/shop/list/active', adminToken, manageShopController.getListActiveShop);
-adminRoute.get('/shop/list/requesting', adminToken, manageShopController.getListRequestingShop);
+adminRoute.get('/shop/list/active', adminToken, manageShopController.getListActiveShop); // đã test
+adminRoute.get('/shop/list/requesting', adminToken, manageShopController.getListRequestingShop); // đã test
 adminRoute.post('/shop/approve/:id', adminToken, manageShopMiddleware.request, manageShopController.approve);
 adminRoute.post('/shop/reject/:id', adminToken, manageShopMiddleware.request, manageShopController.reject);
 adminRoute.post('/shop/delete/:id', adminToken, manageShopMiddleware.delete, manageShopController.delete);

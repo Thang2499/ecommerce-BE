@@ -1,5 +1,4 @@
 import userModel from "../../models/userModel.js";
-import userModel from "../../models/userModel.js";
 
 const manageUserMiddleware = {
     delete: async (req, res) => {

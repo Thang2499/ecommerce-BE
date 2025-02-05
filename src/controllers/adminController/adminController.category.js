@@ -3,12 +3,17 @@ import cloudinaryService from "../../services/cloudinary.service.js";
 
 const categoryController = {
     create: async (req, res) => {
-        const { image } = req.files;
         try {
             let categoryImg = 'https://freesvg.org/img/abstract-user-flat-4.png';
             // anh có thể đặt link default img là link khác cho category, đây là link tạm thời em để
-            if (image) {
-                const mainImagePath = image[0];
+            // if (image) {
+            //     const mainImagePath = image[0];
+            //     const uploadedMainImage = await cloudinaryService.postSingleImage(mainImagePath, 'category');
+            //     categoryImg = uploadedMainImage.secure_url;
+            // }
+            if (req.files && req.files.image) {
+                const image = req.files.image;
+                const mainImagePath = image[0]; // Đảm bảo rằng image có cấu trúc đúng nếu là array
                 const uploadedMainImage = await cloudinaryService.postSingleImage(mainImagePath, 'category');
                 categoryImg = uploadedMainImage.secure_url;
             }

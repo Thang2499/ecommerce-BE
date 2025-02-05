@@ -1,3 +1,4 @@
+import orderModel from "../../models/orderModel.js";
 import productModel from "../../models/productModel.js";
 import shopModel from "../../models/shopModel.js";
 import cloudinaryService from "../../services/cloudinary.service.js";
@@ -52,9 +53,6 @@ const shopController = {
             res.status(500).send({ message: "Error while getting product list" });
         }
     },
-    
-    
-    
     createProduct: async (req, res) => {
         const { name, price, description, category,shopId } = req.body;
         const { image, imageDetail } = req.files;
@@ -145,7 +143,42 @@ const shopController = {
         } catch (error) {
             res.status(500).send({ message: error.message });
         }
-    }
+    },
+    manageOrder: async (req,res) => {
+        try {
+            const user = req.user;
+            const findShop = await orderModel.find({shopId:user.shopId}).populate({
+                path:'items.itemId',
+                model:'items',
+                populate: {
+                    path: 'productId',
+                    model: 'products',
+                    select: 'productName image'
+                  },
+            }).populate({
+                path:'userId',
+                model:'users',
+                select:'name phone'
+            });
+            res.send(findShop)
+        } catch (error) {
+            res.status(400).send({
+                message: error.message
+            })
+        }
+    },
+    approveOrder: async (req,res) =>{
+        try {
+            const {newStatus} = req.body;
+            const orderId = req.params;
+            const updateStatus = await orderModel.findByIdAndUpdate(orderId.orderId,{
+                status:newStatus
+            })
+            res.status(200).send('success')
+        } catch (error) {
+            return res.status(400).send(error.message)
+        }
+    },
       
 }
 export default shopController;

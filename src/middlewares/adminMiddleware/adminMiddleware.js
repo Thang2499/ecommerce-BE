@@ -1,5 +1,7 @@
 import adminModel from "../../models/adminModel.js";
 import kryptoService from "../../utils/hashing.js";
+import tokenService from "../../services/jwt.service.js";
+
 
 const adminMiddleware = {
     checkLogin: async (req, res, next) => {
@@ -11,8 +13,7 @@ const adminMiddleware = {
             }
 
             const admin = await adminModel.findOne({ email });
-
-            if (!admin || !admin.isActived) {
+            if (!admin ) {
                 return res.send('Tai khoan khong ton tai');
             }
 
@@ -33,7 +34,7 @@ const adminMiddleware = {
         const admin = req.admin;
         try {
 
-            if (admin.role !== 'SUPER_ADMIN' || !admin.isActived) {
+            if (admin.role !== 'SUPER_ADMIN' && !admin.isActive) {
                 return res.send('Ban khong co quyen');
             }
 

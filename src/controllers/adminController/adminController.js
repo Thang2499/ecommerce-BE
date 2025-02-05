@@ -7,7 +7,7 @@ const adminController = {
     login: async (req, res) => {
         const { email } = req.body;
         try {
-            const admin = await adminModel.findOne({ email, isActived: true });
+            const admin = await adminModel.findOne({ email, isActive: true });
             const accessToken = tokenService.signAccessToken({ admin });
             const refreshToken = tokenService.signRefreshToken({ admin });
             res.cookie('refresh-Token', refreshToken, {
@@ -72,12 +72,12 @@ const adminController = {
                 address,
                 gender: gender || '',
                 role: 'ADMIN',
-                isActived: true
+                isActive: true
             });
 
             await approvedAdmin.save();
 
-            return res.send('tao ADMIN thanh cong');
+            return res.status(201).send('tao ADMIN thanh cong');
         }
         catch (err) {
             return res.send(err.message);
@@ -95,12 +95,12 @@ const adminController = {
                 phone,
                 address,
                 gender: gender || '',
-                isActived: true
+                isActive: true
             });
 
             await approveReadOnly.save();
 
-            return res.send('tao READ_ONLY thanh cong');
+            return res.status(201).send('tao READ_ONLY thanh cong');
         }
         catch (err) {
             return res.send(err.message);
