@@ -51,7 +51,6 @@ const adminMiddleware = {
                     { name }
                 ]
             });
-
             if (duplicate) {
                 return res.send('Tai khoan da ton tai');
             }

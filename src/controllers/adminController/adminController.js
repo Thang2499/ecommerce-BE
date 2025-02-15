@@ -11,7 +11,6 @@ const adminController = {
             const accessToken = tokenService.signAccessToken({ admin });
             const refreshToken = tokenService.signRefreshToken({ admin });
             res.cookie('refresh-Token', refreshToken, {
-                signed: true,
                 httpOnly: true,
                 secure: false,
                 sameSite: 'Lax',

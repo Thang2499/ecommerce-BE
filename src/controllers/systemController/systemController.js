@@ -211,13 +211,14 @@ const systemController = {
         const { address, selectedPayment, fee } = req.body
         const user = req.user;
         try {
-            const userCart = await userModel.findById(user.user._id).populate({
+            const userCart = await userModel.findById(user._id).populate({
                 path: 'cart.itemId',
                 populate: {
                     path: 'productId',
                     select: 'shopId price productName image',
                 },
             });
+
             const itemsByShop = userCart.cart.reduce((acc, cartItem) => {
                 const shopId = cartItem.itemId.productId.shopId.toString();
                 if (!acc[shopId]) acc[shopId] = [];
@@ -236,7 +237,7 @@ const systemController = {
                     totalAmount = 0
                 }
                 const order = await orderModel.create({
-                    userId: user.user._id,
+                    userId: user._id,
                     shopId,
                     items: items.map(item => ({
                         itemId: item.itemId._id,
@@ -256,7 +257,7 @@ const systemController = {
                 );
             }
             await userModel.updateOne(
-                { _id: user.user._id },
+                { _id: user._id },
                 { cart: [] }
             );
             // if (itemIdsToDelete.length > 0) {

@@ -5,7 +5,6 @@ const adminToken = async (req, res, next) => {
     try {
         const token = req.headers.authorization.split(' ')[1];
         const decodedToken = tokenService.verifyToken(token);
-
         if(decodedToken.status === 401) {
             return res.send(decodedToken.message);
         }

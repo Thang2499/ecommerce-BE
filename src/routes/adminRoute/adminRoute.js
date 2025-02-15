@@ -20,7 +20,7 @@ adminRoute.post('/login', adminMiddleware.checkLogin, adminController.login); //
 adminRoute.post('/create/admin', adminToken, adminMiddleware.create, adminController.create_ADMIN);// đã test
 adminRoute.post('/create/read-only', adminToken, adminMiddleware.create, adminController.create_READ_ONLY);// đã test
 adminRoute.put('/update', adminToken, imageService.saveSingleImg(), adminController.update);
-adminRoute.get('/listAdmin', adminToken, adminController.listAdmin);
+adminRoute.get('/listAdmin', adminToken, adminController.listAdmin); // đã test
 
 // category
 adminRoute.post('/category/create', adminToken, imageService.saveSingleImg(), categoryMiddleware.create, categoryController.create); // đã test
