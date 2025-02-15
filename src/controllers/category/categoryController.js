@@ -3,13 +3,25 @@ import categoryModel from "../../models/categoryModel.js";
 const categoryController = {
     getList: async (req, res) => {
         try {
-            const listCategory = await categoryModel.find({parentId: null});
+            const listCategory = await categoryModel.aggregate([
+                {
+                    $match: { parentId: null } // Lấy danh mục cha
+                },
+                {
+                    $lookup: {
+                        from: "categories", // Tên collection (thường là categories)
+                        localField: "_id",
+                        foreignField: "parentId",
+                        as: "children"
+                    }
+                }
+            ]);
+    
             return res.status(200).json({
-                message: 'Danh sach',
+                message: "Danh sách danh mục",
                 listCategory: listCategory || []
             });
-        }
-        catch (err) {
+        } catch (err) {
             return res.status(400).json({ message: err.message });
         }
     },
