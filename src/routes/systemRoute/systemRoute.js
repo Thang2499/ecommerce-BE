@@ -17,6 +17,8 @@ systemRoute.post('/createOrder', authenticateUser, systemController.createOrder)
 systemRoute.post('/productDetail', systemController.productDetail);
 
 // commenting
-systemRoute.get('/comments', systemController)
+// /:id should be an Item's id which is productId in itemModel
+systemRoute.get('/comment/get/:id', systemMiddleware.getComment, systemController.getComment)
+systemRoute.post('/comment/post/:id', systemMiddleware.postComment, systemController.postComment)
 
 export default systemRoute;

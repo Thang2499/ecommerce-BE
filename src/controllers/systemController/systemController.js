@@ -1,3 +1,4 @@
+import commentModel from "../../models/commentModel.js";
 import itemModel from "../../models/itemModel.js";
 import orderModel from "../../models/orderModel.js";
 import productModel from "../../models/productModel.js";
@@ -6,20 +7,20 @@ import userModel from "../../models/userModel.js";
 
 const systemController = {
     getProductsList: async (req, res) => {
-        const { page = 1, limit = 20 } = req.query; 
-    
-        const startPo = (page - 1) * limit; 
-        const endPo = startPo + limit;   
+        const { page = 1, limit = 20 } = req.query;
+
+        const startPo = (page - 1) * limit;
+        const endPo = startPo + limit;
         try {
             const totalProduct = await productModel.countDocuments();
-    
+
             const totalPages = Math.ceil(totalProduct / limit);
-    
+
             const getProductsList = await productModel
                 .find()
                 .skip(startPo)
                 .limit(limit);
-    
+
             if (getProductsList.length > 0) {
                 res.status(200).send({
                     getProductsList,
@@ -27,18 +28,19 @@ const systemController = {
                     totalPages,
                     totalProduct,
                     limit
-                });}
+                });
+            }
         } catch (error) {
-            res.status(500).send({message: "Error while getting products list"});
+            res.status(500).send({ message: "Error while getting products list" });
         }
     },
-    getCart : async (req, res) => {
+    getCart: async (req, res) => {
         try {
-            const {id} = req.body;
+            const { id } = req.body;
             const user = await userModel.findById(id);
             const cart = user.cart;
             const itemIds = cart.map(item => item.itemId);
-          
+
             const itemsInCart = await itemModel.find({ _id: { $in: itemIds } }).populate({
                 path: 'productId',
                 model: 'products'
@@ -48,26 +50,26 @@ const systemController = {
                 itemsInCart
             });
         } catch (error) {
-            res.status(500).send({message: "Error while getting cart"})
+            res.status(500).send({ message: "Error while getting cart" })
         }
     },
-    getWistList : async (req, res) => {
+    getWistList: async (req, res) => {
         const { id } = req.body;
         try {
             const user = await userModel.findById(id).populate('wishlist.productId');
-            if(user.wishlist){
+            if (user.wishlist) {
                 res.status(200).send(user.wishlist);
-            }else{
-                res.status(404).send({message: "Cart not found"});
+            } else {
+                res.status(404).send({ message: "Cart not found" });
             }
         } catch (error) {
-            res.status(500).send({message: "Error while getting cart"})
+            res.status(500).send({ message: "Error while getting cart" })
         }
     },
     addWishList: async (req, res) => {
-        const { id } = req.params; 
+        const { id } = req.params;
         const { wishList } = req.body;
-    
+
         try {
             const user = await userModel.findById(id);
             if (!user) {
@@ -75,7 +77,7 @@ const systemController = {
             }
             const existingProductIds = user.wishlist.map(item => item.productId.toString()); // Lấy danh sách productId đã có
             const newWishList = wishList.filter(item => !existingProductIds.includes(item.productId)); // Lọc sản phẩm chưa có
-    
+
             if (newWishList.length === 0) {
                 return res.status(200).send({ message: "Sản phẩm đã có trong wishlist" });
             }
@@ -84,7 +86,7 @@ const systemController = {
                 { $addToSet: { wishlist: { $each: newWishList } } },
                 { new: true }
             );
-    
+
             res.status(200).send({
                 message: "Thêm vào wishlist thành công",
                 user: updatedUser
@@ -185,12 +187,12 @@ const systemController = {
         }
     },
     viewCart: async (req, res) => {
-      
+
         try {
             const user = req.user;
             const cart = user.cart;
             const itemIds = cart.map(item => item.itemId);
-          
+
             const itemsInCart = await itemModel.find({ _id: { $in: itemIds } }).populate({
                 path: 'productId',
                 model: 'products'
@@ -248,7 +250,7 @@ const systemController = {
 
                 orders.push(order);
             }
-            
+
             for (const order of orders) {
                 await shopModel.updateOne(
                     { _id: order.shopId },
@@ -271,22 +273,47 @@ const systemController = {
             })
         }
     },
-    productDetail: async (req,res) => {
+    productDetail: async (req, res) => {
         const id = req.body;
         try {
             const product = await productModel.findById(id.id);
-           res.status(200).send(product)
+            res.status(200).send(product)
         } catch (error) {
-            res.status(400).send({
+            return res.status(400).send({
                 message: error.message
             })
         }
     },
     getComment: async (req, res) => {
+        const { id } = req.params;
         try {
-
+            const comments = await commentModel.findById({ productId: id });
+            res.status(200).send(comments ? comments : 'Chua co comment');
         } catch (error) {
+            return res.status(400).send({
+                message: error.message
+            });
+        }
+    },
+    postComment: async (req, res) => {
+        const { id } = req.params;
+        const { userId, text } = req.body;
+        try {
+            const comment = new commentModel({
+                productId: id,
+                userId,
+                text,
+                timestamp: Math.floor(Date.now() / 1000)
+            })
+
+            await comment.save();
             
+            return res.send('Comment thanh cong');
+        }
+        catch (err) {
+            return res.status(400).send({
+                message: error.message
+            })
         }
     }
 }

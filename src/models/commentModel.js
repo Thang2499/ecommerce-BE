@@ -19,6 +19,7 @@ const commentSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'comments'
     },
+    // all timestamps should be in seconds
     timestamp: {
         type: String,
         require: true
