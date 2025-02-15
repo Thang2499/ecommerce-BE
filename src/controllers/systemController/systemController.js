@@ -282,6 +282,12 @@ const systemController = {
             })
         }
     },
-    
+    getComment: async (req, res) => {
+        try {
+
+        } catch (error) {
+            
+        }
+    }
 }
 export default systemController;
