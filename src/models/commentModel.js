@@ -15,20 +15,22 @@ const commentSchema = new mongoose.Schema({
         type: String,
         require: true
     },
-    parentID: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'comments'
-    },
+    parentId: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'comments'
+        }
+    ],
     // all timestamps should be in seconds
     timestamp: {
         type: String,
         require: true
     },
-    isDeleted: {
-        type: Boolean,
-        default: false,
-        require: true
-    },
+    replitedTimes: {
+        type: String,
+        require: true,
+        default: '0'
+    }
 })
 
 const commentModel = mongoose.model('comments', commentSchema);

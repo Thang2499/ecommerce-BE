@@ -12,7 +12,7 @@ const adminToken = async (req, res, next) => {
 
         const admin = await adminModel.findById(decodedToken.admin._id);
 
-        if (!admin ) {
+        if (!admin) {
             return res.send('Tai khoan khong ton tai');
         }
 

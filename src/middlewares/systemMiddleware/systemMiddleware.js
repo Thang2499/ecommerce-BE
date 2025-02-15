@@ -1,3 +1,4 @@
+import commentModel from "../../models/commentModel.js";
 import productModel from "../../models/productModel.js";
 import userModel from "../../models/userModel.js";
 import tokenService from "../../services/jwt.service.js";
@@ -29,20 +30,65 @@ const systemMiddleware = {
         }
     },
     postComment: async (req, res, next) => {
-        const { id } = req.params;
+        const { productId } = req.params;
         const { userId, text } = req.body;
         try {
-            const product = await productModel.findById(id);
+            const product = await productModel.findById(productId);
             const user = await userModel.findById(userId);
 
             if (!product) {
                 return res.send('Product khong ton tai');
             }
-            if(!user) {
+            if (!user) {
                 return res.send('User khong ton tai');
             }
-            if(!text || text.length < 1) {
+            if (!text || text.length < 1) {
                 return res.send('Comment khong duoc de trong');
+            }
+
+            next();
+        }
+        catch (err) {
+            return res.send(err.message);
+        }
+    },
+    replyComment: async (req, res, next) => {
+        const { id } = req.params;
+        const { userId, text } = req.body;
+        try {
+            const replyingComment = await commentModel.findById(id);
+            const user = await userModel.findById(userId);
+
+            if (!replyingComment) {
+                return res.send('Khong tim thay comment')
+            }
+            if (!user) {
+                return res.send('User khong ton tai');
+            }
+            if (!text || text.length < 1) {
+                return res.send('Comment khong duoc de trong');
+            }
+
+            req.parent = replyingComment;
+
+            next();
+        }
+        catch (err) {
+            return res.send(err.message);
+        }
+    },
+    deleteComment: async (req, res, next) => {
+        const { id } = req.params;
+        const { userId } = req.body;
+        try {
+            const comment = await commentModel.findById(id);
+            const user = await userModel.findById(userId);
+
+            if (!comment) {
+                return res.send('Khong tim thay comment')
+            }
+            if (!user) {
+                return res.send('User khong ton tai');
             }
 
             next();

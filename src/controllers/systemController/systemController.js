@@ -285,35 +285,74 @@ const systemController = {
         }
     },
     getComment: async (req, res) => {
-        const { id } = req.params;
+        const { productId } = req.params;
         try {
-            const comments = await commentModel.findById({ productId: id });
+            const comments = await commentModel.findById({ productId });
             res.status(200).send(comments ? comments : 'Chua co comment');
-        } catch (error) {
+        } catch (err) {
             return res.status(400).send({
-                message: error.message
+                message: err.message
             });
         }
     },
     postComment: async (req, res) => {
-        const { id } = req.params;
+        const { productId } = req.params;
         const { userId, text } = req.body;
         try {
             const comment = new commentModel({
-                productId: id,
+                productId,
                 userId,
                 text,
-                timestamp: Math.floor(Date.now() / 1000)
+                timestamp: Math.floor(Date.now() / 1000),
             })
 
             await comment.save();
-            
+
             return res.send('Comment thanh cong');
         }
         catch (err) {
             return res.status(400).send({
-                message: error.message
+                message: err.message
+            });
+        }
+    },
+    replyComment: async (req, res) => {
+        const { id } = req.params;
+        const { userId, text } = req.body;
+        const parent = req.parent;
+        try {
+            const repliedTimes = parseInt(parent.repliedTimes) + 1;
+            parent.parentId.push(id);
+            const comment = new commentModel({
+                productId: parent._id,
+                userId,
+                text,
+                parentId: parent.parentId,
+                timestamp: Math.floor(Date.now() / 1000),
+                replitedTimes: repliedTimes.toString(),
             })
+
+            await comment.save()
+
+            return res.send('Comment thanh cong');
+        }
+        catch (err) {
+            return res.status(400).send({
+                message: err.message
+            });
+        }
+    },
+    deleteComment: async (req, res) => {
+        const { id } = req.params;
+        try {
+            await commentModel.deleteMany({ parentId: id })
+            await commentModel.findByIdAndDelete(id);
+            return res.send('Xoa thanh cong')
+        }
+        catch (err) {
+            return res.status(400).send({
+                message: err.message
+            });
         }
     }
 }
