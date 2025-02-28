@@ -55,6 +55,7 @@ const shopController = {
     },
     createProduct: async (req, res) => {
         const { name, price, description, category,shopId } = req.body;
+        // console.log(description)
         const { image, imageDetail } = req.files;
         try {
             if (!image || !image[0].buffer) {

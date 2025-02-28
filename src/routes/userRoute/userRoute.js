@@ -9,4 +9,6 @@ const userRoute = express.Router();
 userRoute.post('/register',userMiddleware.checkResgister, userController.register)
 userRoute.post('/login', userMiddleware.checkLogin, userController.login)
 userRoute.post('/request-seller', authenticateUser, userController.requestSeller)
+userRoute.get('/viewOrder', authenticateUser, userController.viewOrder);
+userRoute.post('/editProfile', authenticateUser, userController.editProfile);
 export default userRoute;

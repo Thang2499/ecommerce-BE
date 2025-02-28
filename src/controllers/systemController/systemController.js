@@ -32,6 +32,19 @@ const systemController = {
             res.status(500).send({message: "Error while getting products list"});
         }
     },
+    getProductByCategory: async (req, res) => {
+        const { CategoryId } = req.params;
+     try{
+        const products = await productModel.find({category: CategoryId});
+        if(products.length > 0){
+            res.status(200).send(products);
+        }else{
+            res.status(404).send({message: "Products not found"});
+        }
+        } catch (error) {
+            res.status(500).send({message: "Error while getting products list"});
+        }
+    },
     getCart : async (req, res) => {
         try {
             const {id} = req.body;
@@ -283,6 +296,24 @@ const systemController = {
             })
         }
     },
-    
+    searchProduct: async (req,res) => {
+        const { name } = req.params;
+        try {
+            const regex = new RegExp(name, "i");
+        const productSearch = await productModel.find({
+            $or: [
+                { productName: regex }, 
+                { description: regex }
+            ]
+        })
+            if(productSearch.length > 0){
+                res.status(200).send(productSearch)
+            }else{
+                res.status(404).send({message:'No product found'})
+            }
+        } catch (error) {
+            res.status(500).json({ error: "Internal Server Error",error:error.message });
+        }
+    },
 }
 export default systemController;

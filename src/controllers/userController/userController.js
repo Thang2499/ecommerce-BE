@@ -1,3 +1,5 @@
+import e from "express";
+import orderModel from "../../models/orderModel.js";
 import shopModel from "../../models/shopModel.js";
 import userModel from "../../models/userModel.js";
 import tokenService from "../../services/jwt.service.js";
@@ -88,5 +90,41 @@ const userController = {
                 res.status(500).json({message:"Lỗi khi gửi yêu cầu", error: err.message})
             }
         },
+        viewOrder: async (req,res) => {
+            try {
+                const {user} = req.user;
+                const findOrder = await orderModel.find({userId:user._id}).populate({
+                    path:'items.itemId',
+                    model:'items',
+                    populate: {
+                        path: 'productId',
+                        model: 'products',
+                        select: 'productName image'
+                      },
+                })
+                res.send(findOrder)
+            } catch (error) {
+                res.status(400).send({
+                    message: error.message
+                })
+            }
+        },
+        editProfile: async (req,res) => {
+            try {
+                const {user} = req.user;
+                const {name, email, phone, address} = req.body;
+                const updateUser = await userModel.findByIdAndUpdate(user._id, {
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    address:address
+                })
+                res.status(200).send(updateUser)
+            } catch (error) {
+                res.status(400).send({
+                    message: error.message
+                })
+            }
+        }
     }
 export default userController;

@@ -16,7 +16,6 @@ const categoryController = {
                     }
                 }
             ]);
-    
             return res.status(200).json({
                 message: "Danh sách danh mục",
                 listCategory: listCategory || []
