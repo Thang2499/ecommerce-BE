@@ -16,7 +16,7 @@ app.use(cookieParser());
 //     credentials: true,               
 // }));
 app.use(cors({
-    origin: "https://ecommerce-fe-blond.vercel.app",
+    origin: "https://ecommerce-5nsrcp9jm-thangs-projects-c4756ebe.vercel.app",
     credentials: true
   }));
   
