@@ -21,6 +21,10 @@ app.use(cors({
     methods: "*",
   }));
 app.use(bodyParser.json());
+app.use( (req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', 'https://ecommerce-fe-blond.vercel.app');
+    next();
+});
 app.use('',indexRoute);
 
 // ON START
