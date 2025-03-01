@@ -17,7 +17,9 @@ app.use(cookieParser());
 // }));
 app.use(cors({
     origin: "https://ecommerce-5nsrcp9jm-thangs-projects-c4756ebe.vercel.app",
-    credentials: true
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
   }));
   
 app.use(bodyParser.json());
