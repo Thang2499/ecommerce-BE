@@ -16,7 +16,7 @@ app.use(cookieParser());
 //     credentials: true,               
 // }));
 app.use(cors({
-    origin: "https://ecommerce-fe-blond.vercel.app/",
+    origin: "https://ecommerce-fe-blond.vercel.app",
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
