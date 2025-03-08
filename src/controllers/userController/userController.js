@@ -57,8 +57,7 @@ const userController = {
             }
         },
         requestSeller: async (req, res) => {
-            const { shopName, phoneNumber, description, address } = req.body
-
+            const { shopName, phoneNumber, description, address } = req.body.formData;
             try {
                 const userId = req.user.user._id;
                 const user = await userModel.findById(userId);
@@ -75,9 +74,10 @@ const userController = {
                     name: shopName,
                     email: user.email,
                     phone: phoneNumber,
-                    description,
-                    address,
+                    description: description,
+                    address: address,
                 });
+
                 await newShop.save();
                 await userModel.findByIdAndUpdate(userId, {shopId: newShop._id});
                 res.status(201).json({

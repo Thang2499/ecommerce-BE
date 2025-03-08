@@ -55,7 +55,6 @@ const shopController = {
     },
     createProduct: async (req, res) => {
         const { name, price, description, category,shopId } = req.body;
-        // console.log(description)
         const { image, imageDetail } = req.files;
         try {
             if (!image || !image[0].buffer) {
@@ -130,7 +129,6 @@ const shopController = {
     deleteProduct: async (req, res) => {
         const {id} = req.params;
         const {shopId} = req.query;
-        console.log(id,shopId);
         try {
             const product = await productModel.findById(id);
             if(product.shopId.toString() !== shopId){

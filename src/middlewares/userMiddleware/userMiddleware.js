@@ -13,13 +13,12 @@ const userMiddleware = {
             const user = await userModel.findOne({ email });
 
             if (!user) {
-                return res.send('Email khong ton tai');
+                return res.status(404).send('Email khong ton tai');
             }
 
             const comparepassword = kryptoService.decrypt(password, user.password);
-
             if (!comparepassword) {
-                return res.send('Sai mat khau');
+                return res.status(404).send('Sai mat khau');
             };
 
             next();
