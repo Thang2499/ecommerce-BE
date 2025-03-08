@@ -140,10 +140,7 @@ const systemController = {
                 existingItem.totalPrice = existingItem.quantity * unitPrice;
                 const updatedItem = await existingItem.save();
 
-                return res.status(200).json({
-                    message: 'Cập nhật sản phẩm trong giỏ hàng thành công!',
-                    item: updatedItem,
-                });
+                return res.status(200).json({item: updatedItem});
             }
             const newItem = new itemModel({
                 productId,
@@ -161,7 +158,7 @@ const systemController = {
             res.status(200).send({
                 message: 'success',
                 user
-            })
+            });
         } catch (err) {
             res.send({
                 message: err.message

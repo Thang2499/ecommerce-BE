@@ -32,10 +32,10 @@ const manageShopController = {
         try {
           /* const approvedShop = */await shopModel.findOneAndUpdate({ _id: shop._id }, { isActive: true, requesting: false }, { new: true });
 
-            return res.send('Duyet thanh cong');
+            return res.status(201).send('Duyet thanh cong');
         }
         catch (err) {
-            return res.send(err.message)
+            return res.send(err.message);
         }
     },
     reject: async (req, res) => {

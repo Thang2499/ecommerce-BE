@@ -39,7 +39,7 @@ const userMiddleware = {
 
             const checkEmail = await userModel.findOne({ email });
 
-            if (!checkEmail) {
+            if (checkEmail) {
                 throw Error('Email da ton tai');
             };
 

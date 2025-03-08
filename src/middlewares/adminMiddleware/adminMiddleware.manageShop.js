@@ -3,8 +3,9 @@ import shopModel from "../../models/shopModel.js";
 const manageShopMiddleware = {
     request: async (req, res, next) => {
         const { id } = req.params;
+        console.log(id);
         try {
-            const shop = await shopModel.findOne({ _id: id });
+            const shop = await shopModel.findOne({ userId: id });
 
             if (!shop) {
                 return res.send('User chua tao shop');

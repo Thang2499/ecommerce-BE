@@ -125,6 +125,11 @@ const userController = {
                     message: error.message
                 })
             }
+        },
+        fetchUserInfo: async (req,res) => {
+            const {user} = req.user;
+            const userInfo = await userModel.findById(user._id);
+            res.status(200).send(userInfo);
         }
     }
 export default userController;
